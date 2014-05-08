@@ -1,11 +1,20 @@
 {
-	"name": "laravel/laravel",
-	"description": "The Laravel Framework.",
-	"keywords": ["framework", "laravel"],
+	"name": "scriptotek/mapp",
+	"description": "UI for making mppings between a source vocabulary and several target vocabularies",
+	"keywords": [],
 	"license": "MIT",
 	"require": {
-		"laravel/framework": "4.1.*"
+		"laravel/framework": "4.1.*",
+        "artdarek/oauth-4-laravel": "dev-master",
+        "jenssegers/mongodb": "dev-master",
+        "willdurand/negotiation": "1.2.*",
+        "felixkiss/uniquewith-validator": "1.0.*",
+        "wikibase/easyrdf_lite": "dev-master"
 	},
+    "require-dev": {
+        "way/generators": "2.*",
+        "loic-sharma/profiler": "dev-master"
+    },
 	"autoload": {
 		"classmap": [
 			"app/commands",

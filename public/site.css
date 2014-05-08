@@ -1,0 +1,96 @@
+.container {
+	margin-top: 2em;
+	margin-bottom: 4em;
+}
+h1 {
+	margin-top: 0;
+}
+.history .user {
+	border-bottom: 1px dotted #999;
+}
+.history .datetime {
+	color: #666
+}
+.history .comment {
+	font-style: italic;
+}
+.state {
+	font-weight: bold;
+}
+.identifier {
+
+}
+.heading {
+	font-size:130%;
+	padding: .5em;
+	background: white;
+	border-radius: 4px;
+	margin-bottom: .4em;
+	border: 1px solid #999;
+}
+
+pre {
+  background: #f1efee;
+}
+
+.relationship h4 {
+  color:#888;
+  font-size: 90%;
+  margin: 0;
+  padding: 0;
+}
+
+
+
+/*********************************************************
+ * Typeahead.js Bootstrap integration
+ *********************************************************/
+
+.twitter-typeahead {
+	float:left;
+     width: 100%;
+}
+.tt-dropdown-menu {
+     width: 100%;
+}
+.tt-hint {
+     width: 100%;
+}
+
+.tt-dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 1000;
+  display: none;
+  float: left;
+  min-width: 160px;
+  padding: 5px 0;
+  margin: 2px 0 0;
+  list-style: none;
+  font-size: 14px;
+  background-color: #ffffff;
+  border: 1px solid #cccccc;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 4px;
+  -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+  background-clip: padding-box;
+}
+.tt-suggestion > p {
+  display: block;
+  padding: 3px 20px;
+  clear: both;
+  font-weight: normal;
+  line-height: 1.428571429;
+  color: #333333;
+  white-space: nowrap;
+}
+.tt-suggestion > p:hover,
+.tt-suggestion > p:focus,
+.tt-suggestion.tt-cursor p {
+  color: #ffffff;
+  text-decoration: none;
+  outline: 0;
+  background-color: #428bca;
+}

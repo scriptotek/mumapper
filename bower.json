@@ -1,0 +1,23 @@
+{
+  "name": "moccamapper",
+  "version": "0.1.0",
+  "authors": [
+    "Dan Michael O. Heggø <danmichaelo@gmail.com>"
+  ],
+  "description": "vocabulary mapping tool",
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "public/components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap-select": "~1.5.2",
+    "typeahead.js": "~0.10.2",
+    "highlight.js": "~7.3.0"
+  }
+}

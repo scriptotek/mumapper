@@ -2,15 +2,21 @@
 
 use Illuminate\Auth\UserInterface;
 use Illuminate\Auth\Reminders\RemindableInterface;
+//use Jenssegers\Mongodb\Model as MongoModel;
 
-class User extends Eloquent implements UserInterface, RemindableInterface {
+class User extends \Eloquent implements UserInterface, RemindableInterface {
+
+	public function accounts()
+    {
+        return $this->hasMany('UserAccount');
+    }
 
 	/**
-	 * The database table used by the model.
+	 * Attributes that can be filled by mass assignment
 	 *
-	 * @var string
+	 * @var string[]
 	 */
-	protected $table = 'users';
+	protected $fillable = [];
 
 	/**
 	 * The attributes excluded from the model's JSON form.
@@ -18,6 +24,23 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 	 * @var array
 	 */
 	protected $hidden = array('password');
+
+	/**
+     * Accessor for the data field
+     */
+	public function getDataAttribute($value)
+    {
+        return json_decode($value, true);
+    }
+
+    /**
+     * Mutator for the data field
+     */
+    public function setDataAttribute($value)
+    {
+        $this->attributes['data'] = json_encode($value);
+    }
+
 
 	/**
 	 * Get the unique identifier for the user.
@@ -47,6 +70,35 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 	public function getReminderEmail()
 	{
 		return $this->email;
+	}
+
+	/**
+	 * Get the token value for the "remember me" session.
+	 *
+	 * @return string
+	 */
+	public function getRememberToken()
+	{
+		return $this->remember_token;
+	}
+
+	/**
+	 * Set the token value for the "remember me" session.
+	 *
+	 * @param  string  $value
+	 * @return void
+	 */
+	public function setRememberToken($value) {
+		$this->remember_token = $value;
+	}
+
+	/**
+	 * Get the column name for the "remember me" token.
+	 *
+	 * @return string
+	 */
+	public function getRememberTokenName() {
+		return 'remember_token';
 	}
 
 }
