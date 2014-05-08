@@ -1,5 +1,5 @@
 {
-	"name": "scriptotek/mapp",
+	"name": "scriptotek/moccamapper",
 	"description": "UI for making mppings between a source vocabulary and several target vocabularies",
 	"keywords": [],
 	"license": "MIT",
@@ -28,7 +28,8 @@
 	"scripts": {
 		"post-install-cmd": [
 			"php artisan clear-compiled",
-			"php artisan optimize"
+			"php artisan optimize",
+            "php artisan config:publish artdarek/oauth-4-laravel"
 		],
 		"post-update-cmd": [
 			"php artisan clear-compiled",
