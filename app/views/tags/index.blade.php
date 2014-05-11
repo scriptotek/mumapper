@@ -3,7 +3,7 @@
 @section('content')
 
 	<h2>
-        Etiketter
+        Lister
 	</h2>
 
 	@foreach ($tags as $tag)

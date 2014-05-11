@@ -53,7 +53,7 @@
 		</div>
 
 		<div class="form-group">
-			<label class="col-sm-2 control-label" for="state">merkelapp(er):</label>
+			<label class="col-sm-2 control-label" for="state">liste(r):</label>
 			<div class="col-sm-2">
 				{{ Form::select('tagsOp', $tagsOp, $selectedTagsOp, 
 					array('class' => 'selectpicker', 'data-width' => '100%' )) }}				

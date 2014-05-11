@@ -72,8 +72,8 @@
   </h1>
   <p>
     <a href="{{ URL::to('/relationships') }}">Relasjoner</a> |
+    <a href="{{ URL::to('/tags') }}">Lister</a> |
     <a href="{{ URL::to('/activity') }}">Aktivitet</a> |
-    <a href="{{ URL::to('/tags') }}">Merkelapper</a> |
     osv…
   </p>
   </header>

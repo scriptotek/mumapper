@@ -4,7 +4,7 @@
 @section('content')
 
 	<h2>
-		Merkelapp: {{ $tag->label }}
+		Liste: {{ $tag->label }}
 	</h2>
 
 	<p>
@@ -13,6 +13,6 @@
 
 	<a href="{{ URL::action('RelationshipsController@getIndex') }}?tags%5B%5D={{ $tag->id }}&amp;format=worklist">
 		{{ $tag->relationships()->count() }} relasjoner
-	</a> er merket med denne merkelappen.
+	</a> i denne listen.
 
 @stop
