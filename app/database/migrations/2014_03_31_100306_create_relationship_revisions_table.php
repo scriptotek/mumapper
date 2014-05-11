@@ -23,7 +23,6 @@ class CreateRelationshipRevisionsTable extends Migration {
 
 			$table->integer('relationship_id')->unsigned();
 			$table->integer('created_by')->unsigned();
-			//$table->integer('reviewed_by')->unsigned()->nullable();
 			$table->string('state', 10); /* array(
 				'suggested',
 				'exact',
@@ -50,11 +49,8 @@ class CreateRelationshipRevisionsTable extends Migration {
 				->references('id')->on('users')
 				->onDelete('cascade');
 
-			$table->foreign('reviewed_by')
-				->references('id')->on('users')
-				->onDelete('cascade');
-
 			$table->index('state');
+			$table->index('reviewed_at');
 
 		});
 	}
