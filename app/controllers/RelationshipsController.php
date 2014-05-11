@@ -8,6 +8,14 @@ class RelationshipsController extends BaseController {
 
 	protected function getQueryBuilder()
 	{
+
+		$reviewStates = array(
+			'all' => 'Alle',
+			'pending' => 'Venter på godkjenning',
+			'reviewed' => 'Godkjent',
+		);
+		$selectedReviewState = Input::get('reviewstate', 'all');
+
 		$sourceVocabulary = Vocabulary::find($this->defaultSourceVocabulary);
 
 		$targetVocabularies = Input::get('targetVocabularies');
@@ -56,8 +64,6 @@ class RelationshipsController extends BaseController {
 		$labelText = Input::get('label');
 
 		$notation = Input::get('notation');
-
-		$pending = Input::get('pending', false);
 
 		// With this eager loading, we get 6 queries instead of
 		// 3^N queries for N relationships.
@@ -120,13 +126,19 @@ class RelationshipsController extends BaseController {
 			});
 		}
 
-		if ($pending) {
+		if ($selectedReviewState == 'pending') {
 			$builder->whereHas('latestRevision', function ($q) {
 				$q->whereNull('reviewed_at');
 			});
 			$builder->where('latest_revision_state', '!=', 'suggested');
 			$builder->where('latest_revision_state', '!=', 'rejected'); // ???
+
+		} else if ($selectedReviewState == 'reviewed') {
+			$builder->whereHas('latestRevision', function ($q) {
+				$q->whereNotNull('reviewed_at');
+			});
 		}
+
 
 		//$builder->orderBy('weight', 'desc');
 		$builder->orderBy('id', 'desc');
@@ -137,13 +149,14 @@ class RelationshipsController extends BaseController {
 			'targetVocabularies' => $targetVocabularies,
 			'states' => Relationship::$stateLabels,
 			'selectedStates' => $selectedStates,
+			'reviewStates' => $reviewStates,
+			'selectedReviewState' => $selectedReviewState,
 			'tags' => $tags,
 			'selectedTags' => $selectedTags,
 			'tagsOp' => $tagsOp,
 			'selectedTagsOp' => $selectedTagsOp,
 			'label' => $labelText,
 			'notation' => $notation,
-			'pending' => $pending,
 		];
 
 		return array($args, $builder);
@@ -175,7 +188,7 @@ class RelationshipsController extends BaseController {
 		$format = Input::get('format', 'worklist');
 		$query = Input::all();
 
-		if ($format == 'worklist') {
+		if (in_array($format, array('worklist', 'inline-turtle', 'inline-rdfxml'))) {
 			// Limit
 			//$builder->take(200);
 			$relationships = $builder->paginate(200);
@@ -183,7 +196,7 @@ class RelationshipsController extends BaseController {
 			$relationships = $builder->get();
 		}
 
-		$args['relationships'] = $relationships;		
+		$args['relationships'] = $relationships;
 
 		switch ($format)
 		{
@@ -230,20 +243,17 @@ class RelationshipsController extends BaseController {
 		
 		foreach ($relationships as $rel) {
 
-			if ($rel->latestRevision->reviewed_at) {
+			$predicate = $rel->stateAsSkos();
 
-				$predicate = $rel->stateAsSkos();
+			// Exclude suggested and rejected in RDF representation
+			if ($predicate) {
+				$source = $graph->resource($rel->sourceConcept->uri(), 'skos:Concept');
+				$target = $graph->resource($rel->targetConcept->uri());
 
-				// Exclude suggested and rejected in RDF representation
-				if ($predicate) {
-					$source = $graph->resource($rel->sourceConcept->uri(), 'skos:Concept');
-					$target = $graph->resource($rel->targetConcept->uri());
+				$source->set($predicate, $target);
 
-					$source->set($predicate, $target);
-
-					foreach ($rel->sourceConcept->labels as $lab) {
-						$source->addLiteral('skos:' . $lab->class, $lab->value, $lab->lang);
-					}
+				foreach ($rel->sourceConcept->labels as $lab) {
+					$source->addLiteral('skos:' . $lab->class, $lab->value, $lab->lang);
 				}
 			}
 

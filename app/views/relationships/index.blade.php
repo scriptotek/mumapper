@@ -41,10 +41,8 @@
 				{{ Form::select('states[]', $states, $selectedStates, 
 					array('class' => 'selectpicker', 'multiple' => true)) }}
 
-				<label style="margin-left: 1em;	">
-					{{ Form::checkbox('pending', true, $pending)}}
-					Venter på godkjenning
-				</label>
+				{{ Form::select('reviewstate', $reviewStates, $selectedReviewState,
+					array('class' => 'selectpicker')) }}
 			</div>
 		</div>
 

@@ -3,10 +3,16 @@
 @section('results')
 
 <p>
-	Merk at RDF-representasjonene kun inkluderer <em>godkjente</em> mappinger. 
+	<a href="{{ $directLink }}">
+		<em class="glyphicon glyphicon-save"></em>
+		Last ned hele datasettet
+	</a>
 </p>
 
-<a href="{{ $directLink }}">Last ned</a>
+<p>
+Viser <em>opptil</em> {{ $relationships->count() }} av {{ $relationships->getTotal() }} relasjoner: (RDF-representasjonene inkluderer ikke <em>foreslåtte</em> eller <em>avslåtte</em> mappinger)
+</p>
+
 <pre><code>{{{ $data }}}</code></pre>
 
 <script>hljs.initHighlightingOnLoad();</script>
