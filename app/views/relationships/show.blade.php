@@ -37,9 +37,8 @@
         </strong>
 
         <span style="color:#888; font-size: 90%;" id="rel-responsible">
-        {{ $relationship->latestRevision->reviewed_by 
-          ? 'Godkjent av ' . $relationship->latestRevision->reviewedBy->name
-          : 'Foreslått av ' . $relationship->latestRevision->createdBy->name
+        {{ ($relationship->latestRevision->reviewed_at ? 'Godkjent av ' : 'Foreslått av ')
+           . $relationship->latestRevision->createdBy->name
         }}
         </span>
         </div>

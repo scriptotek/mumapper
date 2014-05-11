@@ -28,11 +28,6 @@ class RelationshipRevision extends Activity implements CommentableInterface {
 		return $this->belongsTo('Relationship');
 	}
 
-	public function reviewedBy()
-	{
-		return $this->belongsTo('User', 'reviewed_by');
-	}
-
 	public function comments()
 	{
 		return $this->morphMany('Comment', 'commentable');
@@ -51,7 +46,7 @@ class RelationshipRevision extends Activity implements CommentableInterface {
 
 	public function asEvent($backlink = false)
 	{
-		list($pre, $post) = $this->reviewed_by
+		list($pre, $post) = $this->reviewed_at
 			? ['godkjente', null]
 		 	: ($this->parent 
 				? ($this->parent->stateLabel() != $this->stateLabel() 
