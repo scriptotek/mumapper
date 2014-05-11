@@ -17,9 +17,9 @@
 <div class="panel panel-default">
 
 	<form class="form-horizontal panel-body" role="form" method="GET" action="{{ URL::action('RelationshipsController@getIndex') }}">
-		
+		Vis relasjoner med
 		<div class="form-group">
-			<label class="col-sm-2 control-label">Kildevokabular</label>
+			<label class="col-sm-2 control-label">kildevokabular:</label>
 			<div class="col-sm-10">
 				<p class="form-control-static">
 					{{ $sourceVocabulary->label }}
@@ -28,18 +28,24 @@
 		</div>
 
 		<div class="form-group">
-			<label class="col-sm-2 control-label" for="targetVocabularies[]">Målvokabular</label>
+			<label class="col-sm-2 control-label" for="targetVocabularies[]">målvokabular:</label>
 			<div class="col-sm-10">
 				{{ Form::select('targetVocabularies[]', $vocabularyList, $targetVocabularies, 
-					array('class' => 'selectpicker', 'multiple' => true)) }}
+					array('class' => 'selectpicker',
+						'multiple' => true,
+						'data-none-selected-text' => 'alle'
+					)) }}
 			</div>
 		</div>
 
 		<div class="form-group">
-			<label class="col-sm-2 control-label" for="state">Tilstander</label>
+			<label class="col-sm-2 control-label" for="state">tilstand(er):</label>
 			<div class="col-sm-10">
 				{{ Form::select('states[]', $states, $selectedStates, 
-					array('class' => 'selectpicker', 'multiple' => true)) }}
+					array('class' => 'selectpicker',
+						'multiple' => true,
+						'data-none-selected-text' => 'alle'
+						)) }}
 
 				{{ Form::select('reviewstate', $reviewStates, $selectedReviewState,
 					array('class' => 'selectpicker')) }}
@@ -47,19 +53,23 @@
 		</div>
 
 		<div class="form-group">
-			<label class="col-sm-2 control-label" for="state">Merkelapper</label>
+			<label class="col-sm-2 control-label" for="state">merkelapp(er):</label>
 			<div class="col-sm-2">
 				{{ Form::select('tagsOp', $tagsOp, $selectedTagsOp, 
 					array('class' => 'selectpicker', 'data-width' => '100%' )) }}				
 			</div>
 			<div class="col-sm-8">
 				{{ Form::select('tags[]', $tags, $selectedTags, 
-					array('class' => 'selectpicker', 'multiple' => true)) }}
+					array('class' => 'selectpicker',
+						'multiple' => true,
+						'data-none-selected-text' => 'alle'
+					)) }}
 			</div>
 		</div>
 
+der kilde eller målbegrep har
 		<div class="form-group">
-			<label class="col-sm-2 control-label" for="state">Term</label>
+			<label class="col-sm-2 control-label" for="state">term:</label>
 			<div class="col-sm-6">
 				{{ Form::text('label', $label, array(
 					'class' => 'form-control',
@@ -72,7 +82,7 @@
 		</div>
 
 		<div class="form-group">
-			<label class="col-sm-2 control-label" for="state">Notasjon</label>
+			<label class="col-sm-2 control-label" for="state">notasjon:</label>
 			<div class="col-sm-6">
 				{{ Form::text('notation', $notation, array(
 					'class' => 'form-control',
@@ -87,7 +97,7 @@
 		<button type="submit" class="btn btn-primary" name="format" value="worklist">Vis arbeidsliste</button>
 		<button type="submit" class="btn btn-primary" name="format" value="inline-rdfxml">Vis RDF/XML</button>
 		<button type="submit" class="btn btn-primary" name="format" value="inline-turtle">Vis RDF/Turtle</button>
-		
+
 	</form>
 </div>
 

@@ -10,9 +10,9 @@ class RelationshipsController extends BaseController {
 	{
 
 		$reviewStates = array(
-			'all' => 'Alle',
-			'pending' => 'Venter på godkjenning',
-			'reviewed' => 'Godkjent',
+			'all' => 'alle',
+			'pending' => 'venter på godkjenning',
+			'reviewed' => 'godkjent',
 		);
 		$selectedReviewState = Input::get('reviewstate', 'all');
 
