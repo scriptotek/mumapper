@@ -88,7 +88,7 @@
         descfield: 'sourceConceptDesc'
       },
       { name: 'targetConcept', 
-        url: '/concepts/search?q=%QUERY',
+        url: '/concepts/search?excludevocabulary=1&q=%QUERY',
         idfield: 'target_concept', 
         descfield: 'targetConceptDesc' 
       }

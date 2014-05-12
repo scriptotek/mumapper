@@ -194,6 +194,7 @@ class ConceptsController extends BaseController {
 	{
 		$query = Input::get('q');
 		$vocabulary = Input::get('vocabulary');
+		$excludevocabulary = Input::get('excludevocabulary');
 
 		// Begrunnelse for tre queries: For å få sorteringen riktig
 		// orderBy vil avhenge av hvor man får treff
@@ -212,8 +213,12 @@ class ConceptsController extends BaseController {
 			->where('labels.class', '=', 'prefLabel')
 			->select('concepts.id', 'concepts.identifier', 'concepts.notation', 'vocabularies.label', 'labels.value');
 		if ($vocabulary) {
-			$q->where('vocabulary_id', $vocabulary);
+			$q->where('vocabulary_id', '=', $vocabulary);
 		}
+		if ($excludevocabulary) {
+			$q->where('vocabulary_id', '!=', $excludevocabulary);
+		}
+
 		$q->orderBy('labels.value');
 
 		$results = array_map(function($concept) {
