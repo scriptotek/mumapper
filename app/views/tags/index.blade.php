@@ -15,15 +15,19 @@
 		</h3>
 		<p style="color: #888;">
 			{{ $tag->relationships()->count() }}
-			relasjoner, hvorav 
+			mappinger, hvorav 
+			{{ $tag->relationships()->where('latest_revision_state', '=', 'suggested')->count() }}
+			forslag,
 			{{ $tag->relationships()->where('latest_revision_state', '=', 'exact')->count() }}
-			manuelt vurdert som eksakte,
+			EQ,
 			{{ $tag->relationships()->where('latest_revision_state', '=', 'close')->count() }}
-			som nær-eksakte,
+			~EQ,
 			{{ $tag->relationships()->where('latest_revision_state', '=', 'broad')->count() }}
-			som broadmatch,
+			BM,
 			{{ $tag->relationships()->where('latest_revision_state', '=', 'narrow')->count() }}
-			som narrowmatch
+			NM,
+			{{ $tag->relationships()->where('latest_revision_state', '=', 'rejected')->count() }}
+			avslått
 		</p>
 		<p>
 			{{ $tag->description }}		

@@ -87,7 +87,7 @@ The SKOS mapping properties are skos:closeMatch, skos:exactMatch, skos:broadMatc
               array('id' => 'state', 'class' => 'selectpicker')
           ) }}
         <span style="color:#888; font-size: 90%;" id="rel-responsible">
-        {{ ($relationship->latestRevision->reviewed_at ? 'Godkjent av ' : 'Foreslått av ')
+        {{ ($relationship->latestRevision->reviewed_at ? 'Godkjent av ' : 'i følge ')
            . $relationship->latestRevision->createdBy->name
         }}
         </span>
