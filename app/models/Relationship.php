@@ -22,11 +22,11 @@ class Relationship extends BaseModel implements CommentableInterface {
 
 	public static $stateLabels = array(
 		'suggested' => 'foreslått',
-		'exact' => 'ekvivalens',
-		'close' => 'nær ekvivalens',
-		'broad' => 'har overordnet',
-		'narrow' => 'har underordnet',
-		'related' => 'relatert',
+		'exact' => 'ekvivalens (EQ)',
+		'close' => 'nær ekvivalens (EQ~)',
+		'broad' => 'har overordnet (BM)',
+		'narrow' => 'har underordnet (NM)',
+		'related' => 'relatert (RM)',
 		'rejected' => 'avslått',
 	);
 
