@@ -191,7 +191,7 @@ class RelationshipsController extends BaseController {
 		if (in_array($format, array('worklist', 'inline-turtle', 'inline-rdfxml'))) {
 			// Limit
 			//$builder->take(200);
-			$relationships = $builder->paginate(200);
+			$relationships = $builder->paginate(1000);
 		} else {
 			$relationships = $builder->get();
 		}
