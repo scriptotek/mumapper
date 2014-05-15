@@ -106,11 +106,11 @@ return array(
 		'Illuminate\Validation\ValidationServiceProvider',
 		'Illuminate\View\ViewServiceProvider',
 		'Illuminate\Workbench\WorkbenchServiceProvider',
+
 		'Way\Generators\GeneratorsServiceProvider',
 		'Artdarek\OAuth\OAuthServiceProvider',
-		'Jenssegers\Mongodb\MongodbServiceProvider',
-		'Profiler\ProfilerServiceProvider',
 		'Felixkiss\UniqueWithValidator\UniqueWithValidatorServiceProvider',
+		'Barryvdh\Debugbar\ServiceProvider',
 
 	),
 
@@ -177,8 +177,9 @@ return array(
 		'URL'             => 'Illuminate\Support\Facades\URL',
 		'Validator'       => 'Illuminate\Support\Facades\Validator',
 		'View'            => 'Illuminate\Support\Facades\View',
+
 		'OAuth'           => 'Artdarek\OAuth\Facade\OAuth',
-		'Profiler'        => 'Profiler\Facades\Profiler',
+		'Debugbar'        => 'Barryvdh\Debugbar\Facade',
 
 	),
 
