@@ -139,9 +139,52 @@ class RelationshipsController extends BaseController {
 			});
 		}
 
+		$sort = Input::get('sort', 'updated_at');
+		$order = Input::get('order', 'desc');
+
+		$builder->select('relationships.*'); // http://stackoverflow.com/q/19141487/489916
+
+		switch ($sort) {
+
+			case 'updated_at':
+				$dbsort = 'relationships.updated_at';
+				break;
+
+			case 'relationship':
+				$dbsort = 'latest_revision_state';
+				break;
+
+			case 'source_concept':
+				$builder->join('concepts', 'relationships.source_concept_id', '=', 'concepts.id')
+					->leftJoin('labels', 'concepts.id', '=', 'labels.concept_id')
+					->where('labels.class', '=', 'prefLabel')
+					->where('labels.lang', '=', 'nb');
+				$dbsort = 'labels.value';
+				break;
+
+			case 'target_concept':
+				$builder->join('concepts', 'relationships.target_concept_id', '=', 'concepts.id')
+					->leftJoin('labels', 'concepts.id', '=', 'labels.concept_id')
+					->where('labels.class', '=', 'prefLabel')
+					->where('labels.lang', '=', 'nb');
+				$dbsort = 'labels.value';
+				break;
+
+			default:
+				die('Unknown sort key');
+
+		}
 
 		//$builder->orderBy('weight', 'desc');
-		$builder->orderBy('id', 'desc');
+		$builder->orderBy($dbsort, $order);
+
+		$perPageOptions = array('100' => '100', '200' => '200', '1000' => '1000', '5000' => '5000');
+		$perPage = intval(Input::get('perPage', '200'));
+
+		// Debugbar will seriously slow down page rendering for very large pages
+		if ($perPage > 500) {
+			Debugbar::disable();
+		}
 
 		$args = [
 			'sourceVocabulary' => $sourceVocabulary,
@@ -157,6 +200,10 @@ class RelationshipsController extends BaseController {
 			'selectedTagsOp' => $selectedTagsOp,
 			'label' => $labelText,
 			'notation' => $notation,
+			'sort' => $sort,
+			'order' => $order,
+			'perPageOptions' => $perPageOptions,
+			'perPage' => $perPage,
 		];
 
 		return array($args, $builder);
@@ -187,16 +234,27 @@ class RelationshipsController extends BaseController {
 
 		$format = Input::get('format', 'worklist');
 		$query = Input::all();
+		if (isset($query['page'])) unset($query['page']);
 
 		if (in_array($format, array('worklist', 'inline-turtle', 'inline-rdfxml'))) {
 			// Limit
 			//$builder->take(200);
-			$relationships = $builder->paginate(1000);
+			$relationships = $builder->paginate($args['perPage']);
 		} else {
 			$relationships = $builder->get();
 		}
 
 		$args['relationships'] = $relationships;
+		$args['sort_urls'] = array();
+		$sortKeys = array('updated_at', 'source_concept', 'target_concept', 'relationship');
+		$q2 = $query;
+		foreach ($sortKeys as $key) {
+			$q2['sort'] = $key;
+			$q2['order'] = ($key == $args['sort']) 
+				? ($args['order'] == 'desc' ? 'asc' : 'desc')
+				: $args['order'];
+			$args['sort_urls'][$key] = URL::action('RelationshipsController@getIndex') . '?' . http_build_query($q2);
+		}
 
 		switch ($format)
 		{
@@ -518,7 +576,7 @@ class RelationshipsController extends BaseController {
 
 
 		// Find next item as item with lower id (since we order by id desc)
-		$next = $builder->where('id','<',$id)->first();
+		$next = $builder->where('relationships.id','<',$id)->first();
 
 		$rel = Relationship::with([
 			'latestRevision',

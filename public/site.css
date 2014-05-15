@@ -49,6 +49,9 @@ pre {
 }
 
 
+.table a {
+  display: block;
+}
 
 /*********************************************************
  * Typeahead.js Bootstrap integration

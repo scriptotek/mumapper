@@ -15,7 +15,6 @@
   <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
   <script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
 
-
   <!-- Bootstrap -->
   <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
   <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
@@ -24,14 +23,12 @@
   <!-- Bootstrap-select -->
   <link rel="stylesheet" type="text/css" href="/components/bootstrap-select/bootstrap-select.css">
   <script src="/components/bootstrap-select/bootstrap-select.min.js"></script>
-
   <script src="/components/typeahead.js/dist/typeahead.bundle.min.js"></script>
 
   <!-- Open Sans -->
   <link href='//fonts.googleapis.com/css?family=Open+Sans&amp;subset=latin,latin-ext' rel='stylesheet' type='text/css'>
 
-  <link rel="stylesheet" href="//yandex.st/highlightjs/8.0/styles/atelier-forest.light.min.css">
-  <script src="//yandex.st/highlightjs/8.0/highlight.min.js"></script>
+  @yield('header')
 
   <!-- Code highlighting-->
 <!--  <link href="/components/prism/themes/prism.css" rel="stylesheet" />

@@ -1,5 +1,10 @@
 @extends('relationships.index')
 
+@section('header')
+  <link rel="stylesheet" href="//yandex.st/highlightjs/8.0/styles/atelier-forest.light.min.css">
+  <script src="//yandex.st/highlightjs/8.0/highlight.min.js"></script>
+@stop
+
 @section('results')
 
 <p>
