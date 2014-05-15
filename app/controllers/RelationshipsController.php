@@ -584,7 +584,6 @@ class RelationshipsController extends BaseController {
 			'sourceConcept',
 			'targetConcept',
 			'revisions',
-			'revisions.comments',
 			'comments',
 			'comments.createdBy',
 		])->findOrFail($id);

@@ -60,9 +60,9 @@ class RelationshipRevision extends Activity implements CommentableInterface {
 		$s = $this->formatEvent($pre, $subj, $post, $icon);
 
 		// Relationship revisions can have comments. Let's show them as well
-		foreach ($this->comments as $c) {
-			$s .= '<div class="comment">' . $c->content . '<div>';
-		}
+		// foreach ($this->comments as $c) {
+		// 	$s .= '<div class="comment">' . $c->content . '<div>';
+		// }
 
 		return $s;
 	}

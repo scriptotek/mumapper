@@ -127,10 +127,18 @@ class Relationship extends BaseModel implements CommentableInterface {
 			$events[] = $e;
 		}
 		usort($events, function($a, $b) {
-			return - strcmp(
+			$q = strcmp(
 				$a->created_at->toISO8601String(),
 				$b->created_at->toISO8601String()
 			);
+			if ($q == 0) {
+				// Sort Revision below Comment
+				return strcmp(
+					get_class($a),
+					get_class($b)
+				);
+			}
+			return - $q;
 		});
 
 		return array_map(function($evt) {
