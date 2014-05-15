@@ -31,7 +31,7 @@ class Comment extends Activity {
 		} else {
 			$subj = '<em>noe som ikke eksisterer</em>';
 		}
-		$s = $this->formatEvent('kommenterte', $subj);
+		$s = $this->formatEvent('kommenterte', $subj, null, 'comment');
 		$s .= '<div class="comment">' . $this->content . '</div>';
 		return $s;
 	}

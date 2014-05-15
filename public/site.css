@@ -12,7 +12,15 @@ h1 {
 	color: #666
 }
 .history .comment {
-	font-style: italic;
+  /*
+	font-style: italic;*/
+  font-size: 120%;
+  border-left: 12px solid #ee0; 
+  /*
+  background: #ffff88; 
+  border-radius: 4px;
+  */
+  padding: 1px 6px;
 }
 .state {
 	font-weight: bold;

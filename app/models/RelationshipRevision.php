@@ -46,18 +46,18 @@ class RelationshipRevision extends Activity implements CommentableInterface {
 
 	public function asEvent($backlink = false)
 	{
-		list($pre, $post) = $this->reviewed_at
-			? ['godkjente', null]
+		list($pre, $post, $icon) = $this->reviewed_at
+			? ['godkjente', null, 'ok-circle']
 		 	: ($this->parent 
 				? ($this->parent->stateLabel() != $this->stateLabel() 
-					? ['endret status for', 'fra <strong>' . $this->parent->stateLabel() . '</strong> til <strong>' . $this->stateLabel() . '</strong>']
-					: ['kommenterte', null]
+					? ['endret status for', 'fra <strong>' . $this->parent->stateLabel() . '</strong> til <strong>' . $this->stateLabel() . '</strong>', 'pencil']
+					: ['kommenterte', null, 'comment']
 				  )
-				: ['opprettet', null]
+				: ['opprettet', null, 'plus-sign']
 			  );
 
 		$subj = $backlink ? $this->representation() : 'relasjonen';
-		$s = $this->formatEvent($pre, $subj, $post);
+		$s = $this->formatEvent($pre, $subj, $post, $icon);
 
 		// Relationship revisions can have comments. Let's show them as well
 		foreach ($this->comments as $c) {

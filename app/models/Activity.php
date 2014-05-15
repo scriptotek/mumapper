@@ -9,9 +9,10 @@ class Activity extends BaseModel {
 		return $this->belongsTo('User', 'created_by');
 	}
 
-	protected function formatEvent($pre, $subject = null, $post = null)
+	protected function formatEvent($pre, $subject = null, $post = null, $icon = null)
     {
-    	$s = '<span class="user">' . $this->createdBy->name . '</span> ';
+		$s = $icon ? '<span class="glyphicon glyphicon-' . $icon . '"></span> ' : '';
+		$s .= '<span class="user">' . $this->createdBy->name . '</span> ';
 		$s .= $pre;
 		$s .= $subject ? ' ' . $subject : '';
 		$s .= $post ? ' ' . $post : '';
