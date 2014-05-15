@@ -516,6 +516,19 @@ class RelationshipsController extends BaseController {
 				}
 			}
 
+			// Add comment
+			if (isset($data['comment'])) {
+
+				// Add comment
+				$com = new Comment;
+				$com->commentable_id = $rel_id;
+				$com->commentable_type = 'Relationship';
+				$com->created_by = $user_id;
+				$com->content = $data['comment'];
+				$com->save();
+
+			}
+
 			// Add revision
 			if (is_null($rel->latest_revision_id) || isset($data['comment'])) {
 				$rev = new RelationshipRevision;
@@ -533,19 +546,6 @@ class RelationshipsController extends BaseController {
 					);
 					continue;
 				}
-			}
-
-			// Add comment
-			if (isset($data['comment'])) {
-
-				// Add comment
-				$com = new Comment;
-				$com->commentable_id = $rev->id;
-				$com->commentable_type = 'RelationshipRevision';
-				$com->created_by = $user_id;
-				$com->content = $data['comment'];
-				$com->save();
-
 			}
 
 			// Response
@@ -609,6 +609,15 @@ class RelationshipsController extends BaseController {
 
 		$currentRev = $rel->latestRevision;
 
+		if (Input::get('comment')) {
+			$comm = new Comment;
+			$comm->commentable_id = $id;
+			$comm->commentable_type = 'Relationship';
+			$comm->content = Input::get('comment');
+			$comm->created_by =  Auth::user()->id;
+			$rel->comments()->save($comm);
+		}
+
 		if (Input::get('state') == $currentRev->state) {
 			// Review
 			if (Auth::user()->id == $currentRev->created_by) {
@@ -640,15 +649,6 @@ class RelationshipsController extends BaseController {
 
 			// MERK: Vi har en MySQL TRIGGER som oppdaterer $rel->latest_revision_id,
 			// så vi slipper å tenke på det
-		}
-
-		if (Input::get('comment')) {
-			$comm = new Comment;
-			$comm->commentable_id = $newRev->id;
-			$comm->commentable_type = 'RelationshipRevision';
-			$comm->content = Input::get('comment');
-			$comm->created_by =  Auth::user()->id;
-			$newRev->comments()->save($comm);
 		}
 
 		return Redirect::action('RelationshipsController@getEdit', $rel->id);
