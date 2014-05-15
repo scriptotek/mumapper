@@ -64,7 +64,7 @@ App::error(function(Exception $exception, $code)
 
 App::down(function()
 {
-	return Response::make("Be right back!", 503);
+	return Response::make("MoccaMapper er nede for vedlikehold. Straks tilbake!", 503);
 });
 
 /*
