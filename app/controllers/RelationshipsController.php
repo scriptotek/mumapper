@@ -70,6 +70,7 @@ class RelationshipsController extends BaseController {
 		$builder = Relationship::with([
 			//'latestRevision',
 			'tags',
+			'comments', // Trenger egentlig bare count()
 			'sourceConcept',
 			'sourceConcept.vocabulary',
 			'sourceConcept.labels' => function ($query)
