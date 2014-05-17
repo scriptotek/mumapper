@@ -16,7 +16,7 @@
 
 <div class="panel panel-default">
 
-    <form class="form-horizontal panel-body" role="form" method="GET" action="{{ URL::action('RelationshipsController@getIndex') }}">
+    <form class="form-horizontal panel-body" role="form" method="GET" action="{{ URL::action('RelationshipsController@index') }}">
         Vis relasjoner med
         <div class="form-group">
             <label class="col-sm-2 control-label">kildevokabular:</label>

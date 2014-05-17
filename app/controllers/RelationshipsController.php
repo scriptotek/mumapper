@@ -215,7 +215,7 @@ class RelationshipsController extends BaseController {
 	 *
 	 * @return Response
 	 */
-	public function getIndex()
+	public function index()
 	{
 
 		list($args, $builder) = $this->getQueryBuilder();
@@ -254,7 +254,7 @@ class RelationshipsController extends BaseController {
 			$q2['order'] = ($key == $args['sort']) 
 				? ($args['order'] == 'desc' ? 'asc' : 'desc')
 				: $args['order'];
-			$args['sort_urls'][$key] = URL::action('RelationshipsController@getIndex') . '?' . http_build_query($q2);
+			$args['sort_urls'][$key] = URL::action('RelationshipsController@index') . '?' . http_build_query($q2);
 		}
 
 		switch ($format)
@@ -328,8 +328,11 @@ class RelationshipsController extends BaseController {
 	 * @param  int	$id
 	 * @return Response
 	 */
-	public function getShow($id)
+	public function show($id)
 	{
+		if (Auth::check()) {
+			return $this->edit($id);
+		}
 	// if rdf, then 
 				// return Response::make($this->rdfRepresentation())
 				//	->header('Content-Type', 'application/rdf+xml; charset=UTF-8');
@@ -559,7 +562,7 @@ class RelationshipsController extends BaseController {
 			return Response::JSON($out);
 		}
 
-		return Redirect::action('RelationshipsController@getEdit', $rel->id);
+		return Redirect::action('RelationshipsController@show', $rel->id);
 
 	}
 
@@ -569,12 +572,11 @@ class RelationshipsController extends BaseController {
 	 * @param  int	$id
 	 * @return Response
 	 */
-	public function getEdit($id)
+	public function edit($id)
 	{
 
 		$query = '?' . http_build_query(Input::all());
 		list($args, $builder) = $this->getQueryBuilder();
-
 
 		// Find next item as item with lower id (since we order by id desc)
 		$next = $builder->where('relationships.id','<',$id)->first();
@@ -651,7 +653,7 @@ class RelationshipsController extends BaseController {
 			// så vi slipper å tenke på det
 		}
 
-		return Redirect::action('RelationshipsController@getEdit', $rel->id);
+		return Redirect::action('RelationshipsController@show', $rel->id);
 	}
 
 	/**
@@ -673,7 +675,7 @@ class RelationshipsController extends BaseController {
 		$comm->created_by =  Auth::user()->id;
 		$rel->comments()->save($comm);
 
-		return Redirect::action('RelationshipsController@getEdit', $rel->id);		
+		return Redirect::action('RelationshipsController@show', $rel->id);
 	}
 
 	/**

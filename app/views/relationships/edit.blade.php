@@ -25,7 +25,7 @@
 
       @if ($next)
         <a class="btn btn-warning" href="{{ 
-          URL::action('RelationshipsController@getEdit', $next->id) . $query
+          URL::action('RelationshipsController@show', $next->id) . $query
         }}">
           Hopp til neste
         </a>

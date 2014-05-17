@@ -157,9 +157,9 @@ class Relationship extends BaseModel implements CommentableInterface {
 			return ' <span class="text-danger">[FEIL: Ingen revisjoner funnet for relasjon #' . $this->id . ']</span> ';
 		}
 		if ($concept->id == $this->sourceConcept->id) {
-			return '<a href="' . URL::action('RelationshipsController@getEdit', $this->id) . '">' . $rev->stateLabel() . '</a> til ' . $this->targetConcept->representation(); 
+			return '<a href="' . URL::action('RelationshipsController@show', $this->id) . '">' . $rev->stateLabel() . '</a> til ' . $this->targetConcept->representation(); 
 		} else {
-			return '<a href="' . URL::action('RelationshipsController@getEdit', $this->id) . '">' . $rev->stateLabel() . '</a> fra ' . $this->sourceConcept->representation(); 
+			return '<a href="' . URL::action('RelationshipsController@show', $this->id) . '">' . $rev->stateLabel() . '</a> fra ' . $this->sourceConcept->representation(); 
 		}
 	}
 
@@ -174,7 +174,7 @@ class Relationship extends BaseModel implements CommentableInterface {
 				' &lt; ERROR: No revision exists! &gt; ' .
 				$this->targetConcept->representation($link);
 		}
-		return ($prefix ? '<a href="' . URL::action('RelationshipsController@getEdit', $this->id) . '">relasjonen</a> ' : '') .
+		return ($prefix ? '<a href="' . URL::action('RelationshipsController@show', $this->id) . '">relasjonen</a> ' : '') .
 			$this->sourceConcept->representation(false, false) . 
 			// $this->representationFrom($this->sourceConcept, $link);
 			' → ' . // <em>' . $this->stateLabel() . ' match</em> 

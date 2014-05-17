@@ -36,11 +36,11 @@
           {{ $relationship->stateLabel() }}
         </strong>
 
-        <span style="color:#888; font-size: 90%;" id="rel-responsible">
-        {{ ($relationship->latestRevision->reviewed_at ? 'Godkjent av ' : 'Foreslått av ')
+        <div style="color:#888; font-size: 90%;" id="rel-responsible">
+        {{ ($relationship->latestRevision->reviewed_at ? 'Godkjent av ' : 'i følge ')
            . $relationship->latestRevision->createdBy->name
+           . '<br>' . $relationship->latestRevision->created_at
         }}
-        </span>
         </div>
 
     </td>

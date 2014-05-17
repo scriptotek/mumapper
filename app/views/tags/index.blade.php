@@ -8,7 +8,7 @@
 
 	@foreach ($tags as $tag)
 		<h3>
-			<a href="{{ URL::action('RelationshipsController@getIndex') }}?tags%5B%5D={{ $tag->id }}&amp;format=worklist">
+			<a href="{{ URL::action('RelationshipsController@index') }}?tags%5B%5D={{ $tag->id }}&amp;format=worklist">
 				<i class="glyphicon glyphicon-tag"></i>
 				{{ $tag->label }}
 			</a>

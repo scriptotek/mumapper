@@ -38,7 +38,7 @@ App::missing(function(NotFoundHttpException $exception)
 
 Route::get('/', function()
 {
-	return Redirect::action('RelationshipsController@getIndex');
+	return Redirect::action('RelationshipsController@index');
 });
 
 
@@ -51,7 +51,7 @@ Route::get('/concepts/{vocabulary}/{id}', 'ConceptsController@getShow');
 
 Route::get('/activity/comments', 'ActivityController@getComments');
 
-Route::get('/relationships/{id}', 'RelationshipsController@getShow')
+Route::get('/relationships/{id}', 'RelationshipsController@show')
 	->where('id', '[0-9]+');
 
 Route::group(array('before' => 'auth'), function()
@@ -66,4 +66,4 @@ Route::group(array('before' => 'auth'), function()
 	Route::controller('tags', 'TagsController');
 });
 
-Route::get('/relationships', 'RelationshipsController@getIndex');
+Route::get('/relationships', 'RelationshipsController@index');
