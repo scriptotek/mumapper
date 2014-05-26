@@ -5,7 +5,7 @@
 <div class="row">
   <div class="col-sm-6">
     <h2>
-      Relasjon #{{ $relationship->id }}
+      {{ Lang::get('relationships.title') }} #{{ $relationship->id }}
     </h2>
     <div style="font-size: 85%;">
       @foreach ($relationship->tags as $tag)
@@ -55,12 +55,12 @@ The SKOS mapping properties are skos:closeMatch, skos:exactMatch, skos:broadMatc
   <tr>
     <td style="background:#eee; width:40%;">
       <div style="text-align:center;font-size:80%;color:#888;">
-        Begrep i kildevokabular:
+        {{ Lang::get('relationships.source_vocabulary_concept') }}
       </div>
       <div class="heading">
-        {{ $relationship->sourceConcept->representation() }}
+        {{ $relationship->sourceConcept->representation() }}:
       </div>
-      <h4>Andre relasjoner:</h4>
+      <h4>{{ Lang::get('relationships.other_relationships') }}:</h4>
       <ul>
       @foreach ($relationship->sourceConcept->sourceRelationships as $c)
         @if ($c->targetConcept->id != $relationship->targetConcept->id)
@@ -70,7 +70,7 @@ The SKOS mapping properties are skos:closeMatch, skos:exactMatch, skos:broadMatc
         @endif
       @endforeach
       </ul>
-      <h4>Eksterne lenker:</h4>
+      <h4>{{ Lang::get('relationships.external_resources') }}:</h4>
       {{ $relationship->sourceConcept->getRelatedContent() }}
 
     </td>
@@ -94,7 +94,7 @@ The SKOS mapping properties are skos:closeMatch, skos:exactMatch, skos:broadMatc
         </div>
 
         <div class="form-group">
-          <label for="comment" class="sr-only">Kommentar</label>
+          <label for="comment" class="sr-only">{{ Lang::get('relationships.comment') }}</label>
           <input type="text" class="form-control" id="comment" name="comment" placeholder="Kommentar">
         </div>
 
@@ -104,13 +104,14 @@ The SKOS mapping properties are skos:closeMatch, skos:exactMatch, skos:broadMatc
 
     </td>
     <td style="background:#efe; width:40%;">
+
       <div style="text-align:center;font-size:80%;color:#888;">
-        Begrep i målvokabular:
+        {{ Lang::get('relationships.target_vocabulary_concept') }}:
       </div>
       <div class="heading">
         {{ $relationship->targetConcept->representation() }}
       </div>
-      <h4>Andre relasjoner:</h4>
+      <h4>{{ Lang::get('relationships.other_relationships') }}:</h4>
       <ul>
       @foreach ($relationship->targetConcept->targetRelationships as $c)
         @if ($c->sourceConcept->id != $relationship->sourceConcept->id)
@@ -120,7 +121,7 @@ The SKOS mapping properties are skos:closeMatch, skos:exactMatch, skos:broadMatc
         @endif
       @endforeach
       </ul>
-      <h4>Eksterne lenker:</h4>
+      <h4>External resources:</h4>
       {{ $relationship->targetConcept->getRelatedContent() }}
 
     </td>

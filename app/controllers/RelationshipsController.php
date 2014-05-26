@@ -31,7 +31,7 @@ class RelationshipsController extends BaseController {
 		$selectedStates = Input::get('states');
 		if ($selectedStates) {
 			foreach ($selectedStates as $state) {
-				if (!isset(Relationship::$stateLabels[$state])) {
+				if (!isset(Lang::get('relationships.states')[$state])) {
 					return App::abort(404, 'Invalid relationship state given.');
 				}
 			}
@@ -191,7 +191,7 @@ class RelationshipsController extends BaseController {
 			'sourceVocabulary' => $sourceVocabulary,
 			'vocabularyList' => $vocabularyList,
 			'targetVocabularies' => $targetVocabularies,
-			'states' => Relationship::$stateLabels,
+			'states' => Lang::get('relationships.states'),
 			'selectedStates' => $selectedStates,
 			'reviewStates' => $reviewStates,
 			'selectedReviewState' => $selectedReviewState,
@@ -257,6 +257,7 @@ class RelationshipsController extends BaseController {
 			$args['sort_urls'][$key] = URL::action('RelationshipsController@index') . '?' . http_build_query($q2);
 		}
 
+		$args['query'] = $query;
 		switch ($format)
 		{
 			case 'inline-turtle':
@@ -283,7 +284,6 @@ class RelationshipsController extends BaseController {
 				return Response::JSON($relationships);
 
 			default:
-				$args['query'] = $query;
 				return Response::view('relationships.html', $args);
 
 		}
@@ -366,7 +366,7 @@ class RelationshipsController extends BaseController {
 		return View::make('relationships.create', array(
 			// 'targetVocabulary' => $targetVocabulary,
 			'vocabularyList' => $vocabularyList,
-			'states' => Relationship::$stateLabels,
+			'states' => Lang::get('relationships.states'),
 			// 'targetConcept' => $targetConcept,
 		));
 	}
@@ -592,7 +592,7 @@ class RelationshipsController extends BaseController {
 
 		return View::make('relationships.edit', array(
 			'relationship' => $rel,
-			'states' => Relationship::$stateLabels,
+			'states' => Lang::get('relationships.states'),
 			'query' => $query,
 			'next' => $next,
 			'canReview' => (is_null($rel->latestRevision->reviewed_at) && $rel->latestRevision->created_by != Auth::user()->id) ? 'true' : 'false',

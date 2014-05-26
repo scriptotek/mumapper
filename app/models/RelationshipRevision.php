@@ -41,7 +41,7 @@ class RelationshipRevision extends Activity implements CommentableInterface {
 
 	public function stateLabel()
 	{
-		return Relationship::$stateLabels[$this->state];
+		return Lang::get('relationships.states')[$this->state];
 	}
 
 	public function asEvent($backlink = false)

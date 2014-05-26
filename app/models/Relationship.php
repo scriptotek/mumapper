@@ -20,16 +20,6 @@ class Relationship extends BaseModel implements CommentableInterface {
 		'related' => 'skos:relatedMatch',
 	);
 
-	public static $stateLabels = array(
-		'suggested' => 'foreslått',
-		'exact' => 'ekvivalens (EQ)',
-		'close' => 'nær ekvivalens (EQ~)',
-		'broad' => 'har overordnet (BM)',
-		'narrow' => 'har underordnet (NM)',
-		'related' => 'relatert (RM)',
-		'rejected' => 'avslått',
-	);
-
 	/**
      * Validation rules
      * 
@@ -83,7 +73,7 @@ class Relationship extends BaseModel implements CommentableInterface {
 
 	public function stateLabel()
 	{
-		return self::$stateLabels[$this->latest_revision_state];
+		return Lang::get('relationships.states')[$this->latest_revision_state];
 	}
 
 	public function stateAsSkos()
@@ -156,10 +146,15 @@ class Relationship extends BaseModel implements CommentableInterface {
 		if (!$rev) {
 			return ' <span class="text-danger">[FEIL: Ingen revisjoner funnet for relasjon #' . $this->id . ']</span> ';
 		}
+		$args = array(
+			'state' => '<a href="' . URL::action('RelationshipsController@show', $this->id) . '">' . $rev->stateLabel() . '</a>',
+		);
 		if ($concept->id == $this->sourceConcept->id) {
-			return '<a href="' . URL::action('RelationshipsController@show', $this->id) . '">' . $rev->stateLabel() . '</a> til ' . $this->targetConcept->representation(); 
+			$args['target'] = $this->targetConcept->representation();
+			return Lang::get('relationships.as_source', $args);
 		} else {
-			return '<a href="' . URL::action('RelationshipsController@show', $this->id) . '">' . $rev->stateLabel() . '</a> fra ' . $this->sourceConcept->representation(); 
+			$args['source'] = $this->sourceConcept->representation();
+			return Lang::get('relationships.as_target', $args);
 		}
 	}
 
