@@ -9,7 +9,7 @@
 
 <strong>Viser {{ $relationships->count() }} av {{ $relationships->getTotal() }} relasjoner:</strong>
 
-<table class="table">
+<table class="table relationships">
 	<tr>
 		<th>
 			<a href="{{ $sort_urls['source_concept'] }}">

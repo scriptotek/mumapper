@@ -7,7 +7,7 @@
   Relasjon #{{ $relationship->id }}
 </h2>
 
-<table class="table">
+<table class="table relationship">
   <tr>
     <td style="background:#eee; width:40%;">
       <div class="heading">
