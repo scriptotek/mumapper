@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="nb">
 <head>
-  <title>MoccaMapper {{ isset($subtitle) ? ' : ' . $subtitle : '' }}</title>
+  <title>μmapper {{ isset($subtitle) ? ' : ' . $subtitle : '' }}</title>
 
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -64,7 +64,7 @@
   <header>    
   <h1>
     <a href="{{ URL::to('/') }}">
-      MoccaMapper    
+      μmapper
     </a>
   </h1>
   <p>
@@ -104,7 +104,7 @@
     @yield('content')
 
     <footer style="margin-top:3em; margin-bottom: 2em; font-size: 85%;padding:1em 10%; text-align: center; border-top: 1px solid #ccc;">
-      MoccaMapper er et verktøy for å utarbeide og vedlikeholde 
+      μmapper er et verktøy for å utarbeide og vedlikeholde
       <em class="help" data-toggle="tooltip" title="crosswalks: table of mappings between the concepts in two or more structured vocabularies">overganger</em>
       mellom begreper i Realfagstermer (RT) og andre strukturerte vokabularer som
       Tekord (TEK) og Dewey (DDK23).
