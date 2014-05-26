@@ -112,7 +112,7 @@ class Concept extends BaseModel implements CommentableInterface {
 			$predicate = $rel->stateAsSkos();
 			if ($predicate) {
 				$target = $graph->resource($rel->targetConcept->uri());
-				$source->set($predicate, $target);				
+				$source->add($predicate, $target);
 			}
 		}
 
