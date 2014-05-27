@@ -140,35 +140,37 @@ class RelationshipsController extends BaseController {
 			});
 		}
 
-		$sort = Input::get('sort', 'updated_at');
-		$order = Input::get('order', 'desc');
+		$sel = array(
+			'relationships.*',  // http://stackoverflow.com/q/19141487/489916
+			'relationships.updated_at AS rel_updated_at'
+		);
 
-		$builder->select('relationships.*'); // http://stackoverflow.com/q/19141487/489916
-
-		switch ($sort) {
+		switch (Input::get('sort', 'updated_at')) {
 
 			case 'updated_at':
-				$dbsort = 'relationships.updated_at';
+				$sort = array('name' => 'relationships.updated_at', 'alias' => 'rel_updated_at');
 				break;
 
 			case 'relationship':
-				$dbsort = 'latest_revision_state';
+				$sort = array('name' => 'latest_revision_state', 'alias' => 'latest_revision_state');
 				break;
 
 			case 'source_concept':
+				$sel[] = 'labels.value AS prefLabel';
 				$builder->join('concepts', 'relationships.source_concept_id', '=', 'concepts.id')
 					->leftJoin('labels', 'concepts.id', '=', 'labels.concept_id')
 					->where('labels.class', '=', 'prefLabel')
 					->where('labels.lang', '=', 'nb');
-				$dbsort = 'labels.value';
+				$sort = array('name' => 'labels.value', 'alias' => 'prefLabel');
 				break;
 
 			case 'target_concept':
+				$sel[] = 'labels.value AS prefLabel';
 				$builder->join('concepts', 'relationships.target_concept_id', '=', 'concepts.id')
 					->leftJoin('labels', 'concepts.id', '=', 'labels.concept_id')
 					->where('labels.class', '=', 'prefLabel')
 					->where('labels.lang', '=', 'nb');
-				$dbsort = 'labels.value';
+				$sort = array('name' => 'labels.value', 'alias' => 'prefLabel');
 				break;
 
 			default:
@@ -176,8 +178,13 @@ class RelationshipsController extends BaseController {
 
 		}
 
+		$sort['order'] = Input::get('order', 'desc');
+
+		$builder->select($sel);
+
 		//$builder->orderBy('weight', 'desc');
-		$builder->orderBy($dbsort, $order);
+		$builder->orderBy($sort['alias'], $sort['order'])
+			->orderBy('id', $sort['order']);
 
 		$perPageOptions = array('100' => '100', '200' => '200', '1000' => '1000', '5000' => '5000');
 		$perPage = intval(Input::get('perPage', '200'));
@@ -201,13 +208,13 @@ class RelationshipsController extends BaseController {
 			'selectedTagsOp' => $selectedTagsOp,
 			'label' => $labelText,
 			'notation' => $notation,
-			'sort' => $sort,
-			'order' => $order,
+			'sort' => Input::get('sort', 'updated_at'),
+			'order' => Input::get('order', 'desc'),
 			'perPageOptions' => $perPageOptions,
 			'perPage' => $perPage,
 		];
 
-		return array($args, $builder);
+		return array($args, $builder, $sort);
 	}
 
 	/**
@@ -218,7 +225,7 @@ class RelationshipsController extends BaseController {
 	public function index()
 	{
 
-		list($args, $builder) = $this->getQueryBuilder();
+		list($args, $builder, $sort) = $this->getQueryBuilder();
 		//$builder->orderBy('created_at')
 
 		// Debug:
@@ -575,11 +582,21 @@ class RelationshipsController extends BaseController {
 	public function edit($id)
 	{
 
-		$query = '?' . http_build_query(Input::all());
-		list($args, $builder) = $this->getQueryBuilder();
-
 		// Find next item as item with lower id (since we order by id desc)
-		$next = $builder->where('relationships.id','<',$id)->first();
+		$query = '?' . http_build_query(Input::all());
+		list($args, $builder, $sort) = $this->getQueryBuilder();
+
+		$current = with(clone $builder)
+			->where('relationships.id','=',$id)
+			->first();
+
+		$next = with(clone $builder)
+			->where($sort['name'], ($sort['order'] == 'asc' ? '>=' : '<='), $current->{$sort['alias']})
+			->where(function($query) use ($current, $sort) {
+				$query->where($sort['name'], ($sort['order'] == 'asc' ? '>' : '<'), $current->{$sort['alias']})
+					->orWhere('relationships.id', ($sort['order'] == 'asc' ? '>' : '<'), $current->id);
+			})
+			->first();
 
 		$rel = Relationship::with([
 			'latestRevision',
