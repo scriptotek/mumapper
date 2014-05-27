@@ -4,6 +4,7 @@ investigating the feasibility of mapping *Realfagstermer* to Dewey. Realfagsterm
 of the <a href="http://www.ub.uio.no/english/about/organisation/ureal/">University of Oslo Science Library</a>.
 
 Installation:
+
 1. `composer install`
 2. `bower install`
 3. Set `key` in `app/config/app.php`
