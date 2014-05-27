@@ -3,7 +3,7 @@
 @section('content')
 
 <div class="row">
-  <div class="col-sm-6">
+  <div class="col-sm-4">
     <h2>
       {{ Lang::get('relationships.title') }} #{{ $relationship->id }}
     </h2>
@@ -20,9 +20,9 @@
       }}
     </div>
   </div>
-  <div class="col-sm-6">
-    <div style="float:right; margin-top:1.8em;">
+  <div class="col-sm-8" style="padding-top:.4em;">
 
+    <div style="float:right; margin-left: .5em;">
       @if ($next)
         <a class="btn btn-warning" href="{{ 
           URL::action('RelationshipsController@show', $next->id) . $query
@@ -35,8 +35,59 @@
           i arbeidslisten
         </em>
       @endif
-
     </div>
+
+    <p style="font-size:80%; text-align:right;">
+      <a href="{{ URL::action('RelationshipsController@index') . $query }}">Nåværende arbeidsliste</a>:
+
+      @if ($args['targetVocabularies'])
+        <span class="criterium">
+          målvokabular IN (
+          @foreach ($args['targetVocabularies'] as $x)
+            "{{Vocabulary::find($x)->label}}"
+          @endforeach
+          )
+        </span>
+      @endif
+
+      @if ($args['selectedStates'])
+        <span class="criterium">
+          tilstand IN (
+          @foreach ($args['selectedStates'] as $x)
+            "{{$x}}"
+          @endforeach
+          )
+        </span>
+      @endif
+
+      @if ($args['selectedReviewState'])
+        <span class="criterium">
+          godkjenningsstatus = {{ $args['selectedReviewState'] }}
+        </span>
+      @endif
+
+      @if ($args['selectedTags'])
+        <span class="criterium">
+          liste {{ $args['selectedTagsOp'] == 'and' ? 'ALL' : 'ANY' }} (
+          @foreach ($args['selectedTags'] as $x)
+            "{{ Tag::find($x)->label }}"
+          @endforeach
+          )
+        </span>
+      @endif
+
+      @if ($args['label'])
+        <span class="criterium">
+          term = "{{ $args['label'] }}"
+        </span>
+      @endif
+
+      @if ($args['notation'])
+        <span class="criterium">
+          notasjon = "{{ $args['notation'] }}"
+        </span>
+      @endif
+
   </div>
 </div>
 <!--

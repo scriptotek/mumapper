@@ -53,6 +53,18 @@ pre {
   display: block;
 }
 
+.criterium {
+  background: #ffffee;
+  border-top: 1px solid #ccc;
+  border-left: 1px solid #ccc;
+  border-right: 1px solid #eee;
+  border-bottom: 1px solid #eee;
+  padding: 0 4px;
+  border-radius: 3px;
+  margin: 1px 1px;
+  display: inline-block;
+}
+
 /*********************************************************
  * Typeahead.js Bootstrap integration
  *********************************************************/

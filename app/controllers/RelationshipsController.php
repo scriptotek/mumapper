@@ -613,6 +613,7 @@ class RelationshipsController extends BaseController {
 			'query' => $query,
 			'next' => $next,
 			'canReview' => (is_null($rel->latestRevision->reviewed_at) && $rel->latestRevision->created_by != Auth::user()->id) ? 'true' : 'false',
+			'args' => $args,
 		));
 	}
 
