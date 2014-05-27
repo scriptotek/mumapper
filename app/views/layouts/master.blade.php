@@ -41,10 +41,19 @@
 
 </head>
 <body>
-
   <div class="container">
 
-<div style="float:right;">
+  <header class="row">
+
+    <div class="col-sm-2">
+      <h1>
+        <a href="{{ URL::to('/') }}">
+          μmapper
+        </a>
+      </h1>
+    </div>
+
+    <div class="col-sm-10" style="text-align:right;">
 
       @if (Auth::check())
 
@@ -60,20 +69,26 @@
 
       @endif
 
-      </div>
-  <header>    
-  <h1>
-    <a href="{{ URL::to('/') }}">
-      μmapper
-    </a>
-  </h1>
-  <p>
-    <a href="{{ URL::to('/relationships') }}">Relasjoner</a> |
-    <a href="{{ URL::to('/tags') }}">Lister</a> |
-    <a href="{{ URL::to('/activity') }}">Aktivitet</a> |
-    osv…
-  </p>
+      <p style="margin-top:6px;">
+        <a href="{{ URL::to('/relationships') }}" style="margin:1px 6px;">
+          <span class="glyphicon glyphicon-resize-horizontal"></span>
+          Relasjoner
+        </a>
+        <a href="{{ URL::to('/tags') }}" style="margin:1px 6px;">
+          <span class="glyphicon glyphicon-list"></span>
+          Lister
+        </a>
+        <a href="{{ URL::to('/activity') }}" style="margin:1px 6px;">
+          <span class="glyphicon glyphicon-dashboard"></span>
+          Aktivitet
+        </a>
+      </p>
+
+    </div>
+
   </header>
+
+
 
     <div>
       @section('sidebar')
