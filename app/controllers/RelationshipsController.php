@@ -583,20 +583,34 @@ class RelationshipsController extends BaseController {
 	{
 
 		// Find next item as item with lower id (since we order by id desc)
-		$query = '?' . http_build_query(Input::all());
+		$q = Input::all();
+		if (isset($q['next'])) unset($q['next']);
+		$query = '?' . http_build_query($q);
 		list($args, $builder, $sort) = $this->getQueryBuilder();
+
 
 		$current = with(clone $builder)
 			->where('relationships.id','=',$id)
 			->first();
 
-		$next = with(clone $builder)
-			->where($sort['name'], ($sort['order'] == 'asc' ? '>=' : '<='), $current->{$sort['alias']})
-			->where(function($query) use ($current, $sort) {
-				$query->where($sort['name'], ($sort['order'] == 'asc' ? '>' : '<'), $current->{$sort['alias']})
-					->orWhere('relationships.id', ($sort['order'] == 'asc' ? '>' : '<'), $current->id);
-			})
-			->first();
+		// 'next' is stored in the query string on saves. The reason is that a save will cause
+		// a different ordering if the list was sorted by 'last modified'
+		$n = Input::get('next');
+		if ($n) {
+			$nextId = $n;
+		} else {
+
+			$next = with(clone $builder)
+				->where($sort['name'], ($sort['order'] == 'asc' ? '>=' : '<='), $current->{$sort['alias']})
+				->where(function($query) use ($current, $sort) {
+					$query->where($sort['name'], ($sort['order'] == 'asc' ? '>' : '<'), $current->{$sort['alias']})
+						->orWhere('relationships.id', ($sort['order'] == 'asc' ? '>' : '<'), $current->id);
+				})
+				->first();
+
+			$nextId = $next->id;
+
+		}
 
 		$rel = Relationship::with([
 			'latestRevision',
@@ -611,7 +625,7 @@ class RelationshipsController extends BaseController {
 			'relationship' => $rel,
 			'states' => Lang::get('relationships.states'),
 			'query' => $query,
-			'next' => $next,
+			'nextId' => $nextId,
 			'canReview' => (is_null($rel->latestRevision->reviewed_at) && $rel->latestRevision->created_by != Auth::user()->id) ? 'true' : 'false',
 			'args' => $args,
 		));
@@ -628,6 +642,9 @@ class RelationshipsController extends BaseController {
 		$rel = Relationship::findOrFail($id);
 
 		$currentRev = $rel->latestRevision;
+
+		$query = Input::get('query');
+		$next = Input::get('next');
 
 		if (Input::get('comment')) {
 			$comm = new Comment;
@@ -671,7 +688,9 @@ class RelationshipsController extends BaseController {
 			// så vi slipper å tenke på det
 		}
 
-		return Redirect::action('RelationshipsController@show', $rel->id);
+		return Redirect::to(
+			URL::action('RelationshipsController@show', $rel->id) . $query . ($next ? ($query ? '&' : '?') . 'next=' . $next : '')
+		);
 	}
 
 	/**

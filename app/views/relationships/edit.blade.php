@@ -23,9 +23,9 @@
   <div class="col-sm-8" style="padding-top:.4em;">
 
     <div style="float:right; margin-left: .5em;">
-      @if ($next)
+      @if ($nextId)
         <a class="btn btn-warning" href="{{ 
-          URL::action('RelationshipsController@show', $next->id) . $query
+          URL::action('RelationshipsController@show', $nextId) . $query
         }}">
           Hopp til neste
         </a>
@@ -148,6 +148,9 @@ The SKOS mapping properties are skos:closeMatch, skos:exactMatch, skos:broadMatc
           <label for="comment" class="sr-only">{{ Lang::get('relationships.comment') }}</label>
           <input type="text" class="form-control" id="comment" name="comment" placeholder="Kommentar">
         </div>
+
+        <input type="hidden" name="query" value="{{ $query }}">
+        <input type="hidden" name="next" value="{{ $nextId }}">
 
         <button type="submit" id="save-btn" class="btn btn-primary">Lagre/godkjenn</button>
 
