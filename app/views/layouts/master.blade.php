@@ -23,7 +23,9 @@
   <!-- Bootstrap-select -->
   <link rel="stylesheet" type="text/css" href="/components/bootstrap-select/bootstrap-select.css">
   <script src="/components/bootstrap-select/bootstrap-select.min.js"></script>
-  <script src="/components/typeahead.js/dist/typeahead.bundle.min.js"></script>
+
+  <!-- Typeahead-->
+  <script src="/typeahead.js/dist/typeahead.bundle.min.js"></script>
 
   <!-- Open Sans -->
   <link href='//fonts.googleapis.com/css?family=Open+Sans&amp;subset=latin,latin-ext' rel='stylesheet' type='text/css'>

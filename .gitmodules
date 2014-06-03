@@ -1,0 +1,3 @@
+[submodule "public/typeahead.js"]
+	path = public/typeahead.js
+	url = git@github.com:danmichaelo/typeahead.js.git
