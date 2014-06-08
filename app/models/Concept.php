@@ -172,9 +172,12 @@ class Concept extends BaseModel implements CommentableInterface {
 
 			$template = '<ul>
 				<li>
+					Dokumenter:
 					<a href="http://ask.bibsys.no/ask/action/result?cmd=&kilde=biblio&cql=bs.lokoeo-frase+%3D+%22{{label}}%22%20AND%20bs.bibkode=%22k%22&sortering=sortdate-&treffPrSide=50">
-						Vis treff i BIBSYS
-					</a>
+						Bibsys Ask</a>
+					/
+					<a href="http://bibsys-primo.hosted.exlibrisgroup.com/primo_library/libweb/action/dlSearch.do?institution=UBO&vid=UBO&tab=library_catalogue&prefLang=no_NO&bulkSize=50&query=lsr20,exact,{{label}}">
+						Oria</a>
 				</li>
 				</ul>
 				<em style="color:#999;">[Vise bokstatistikk, osv…]</em>
@@ -194,9 +197,12 @@ class Concept extends BaseModel implements CommentableInterface {
 
 			$template = '<ul>
 				<li>
+					Dokumenter:
 					<a href="http://ask.bibsys.no/ask/action/result?cmd=&kilde=biblio&cql=bs.tek-frase+%3D+%22{{label}}%22">
-						Vis treff i BIBSYS
-					</a>
+						Bibsys Ask</a>
+					/
+					<a href="http://bibsys-primo.hosted.exlibrisgroup.com/primo_library/libweb/action/dlSearch.do?institution=UBO&vid=UBO&tab=library_catalogue&prefLang=no_NO&bulkSize=50&query=lsr20,exact,{{label}}">
+						Oria</a>
 				</li>
 				</ul>
 				<em style="color:#999;">[Vise bokstatistikk, osv…]</em>
@@ -226,9 +232,11 @@ class Concept extends BaseModel implements CommentableInterface {
 					</a>
 				</li>
 				<li>
-					<a href="http://ask.bibsys.no/ask/action/result?cmd=&kilde=biblio&cql=dewey+%3D+%22{{id}}%22&bs.bibkode=%22k%22">
-						Vis treff i BIBSYS
-					</a>
+					Dokumenter: <a href="http://ask.bibsys.no/ask/action/result?cmd=&kilde=biblio&cql=dewey+%3D+%22{{id}}%22&bs.bibkode=%22k%22">
+						Bibsys Ask</a>
+					/
+					<a href="http://bibsys-primo.hosted.exlibrisgroup.com/primo_library/libweb/action/dlSearch.do?institution=UBO&vid=UBO&tab=library_catalogue&prefLang=no_NO&bulkSize=50&query=lsr10,exact,{{id}}">
+						Oria</a>
 				</li>
 				</ul>
 				{{tree}}
