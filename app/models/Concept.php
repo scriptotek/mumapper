@@ -170,20 +170,11 @@ class Concept extends BaseModel implements CommentableInterface {
 				->where('class', 'prefLabel')
 				->first();
 
-			$template = '<ul>
-				<li>
-					Dokumenter:
-					<a href="http://ask.bibsys.no/ask/action/result?cmd=&kilde=biblio&cql=bs.lokoeo-frase+%3D+%22{{label}}%22%20AND%20bs.bibkode=%22k%22&sortering=sortdate-&treffPrSide=50">
-						Bibsys Ask</a>
-					/
-					<a href="http://bibsys-primo.hosted.exlibrisgroup.com/primo_library/libweb/action/dlSearch.do?institution=UBO&vid=UBO&tab=library_catalogue&prefLang=no_NO&bulkSize=50&query=lsr20,exact,{{label}}">
-						Oria</a>
-				</li>
-				</ul>
-				<em style="color:#999;">[Vise bokstatistikk, osv…]</em>
-			';
 			if ($label) {
-				return str_replace('{{label}}', $label->value, $template);
+				return View::make('concepts.related', array(
+					'bs_query' => 'bs.lokoeo-frase+%3D+%22' . $label->value . '%22%20AND%20bs.bibkode=%22k%22',
+					'oria_query' => 'lsr20,exact,' . $label->value,
+				));
 			} else {
 				return ''; // Søk i BIBSYS ikke mulig uten etikett
 			}
@@ -195,63 +186,27 @@ class Concept extends BaseModel implements CommentableInterface {
 				->where('class', 'prefLabel')
 				->first();
 
-			$template = '<ul>
-				<li>
-					Dokumenter:
-					<a href="http://ask.bibsys.no/ask/action/result?cmd=&kilde=biblio&cql=bs.tek-frase+%3D+%22{{label}}%22">
-						Bibsys Ask</a>
-					/
-					<a href="http://bibsys-primo.hosted.exlibrisgroup.com/primo_library/libweb/action/dlSearch.do?institution=UBO&vid=UBO&tab=library_catalogue&prefLang=no_NO&bulkSize=50&query=lsr20,exact,{{label}}">
-						Oria</a>
-				</li>
-				</ul>
-				<em style="color:#999;">[Vise bokstatistikk, osv…]</em>
-			';
 			if ($label) {
-				return str_replace('{{label}}', $label->value, $template);
+				return View::make('concepts.related', array(
+					'bs_query' => 'bs.tek-frase+%3D+%22' . $label->value . '%22',
+					'oria_query' => 'lsr12,exact,' . $label->value,
+				));
 			} else {
 				return ''; // Søk i BIBSYS ikke mulig uten etikett
 			}
 
 		} else if ($this->vocabulary->label == 'DDK23') {
-			
-			$template = '<ul>
-				<li>
-					<a href="http://webdeweyno.pansoft.de/webdewey/index_11.html?recordId=ddc%3a{{id}}">
-						Slå opp i norsk WebDewey
-					</a>
-				</li>
-				<li>
-					<a href="http://dewey.org/webdewey/index_11.html?recordId=ddc%3a{{id}}">
-						Slå opp i engelsk WebDewey
-					</a>
-				</li>
-				<li>
-					<a href="http://dewey.info/class/{{id}}/about">
-						Slå opp i dewey.info
-					</a>
-				</li>
-				<li>
-					Dokumenter: <a href="http://ask.bibsys.no/ask/action/result?cmd=&kilde=biblio&cql=dewey+%3D+%22{{id}}%22&bs.bibkode=%22k%22">
-						Bibsys Ask</a>
-					/
-					<a href="http://bibsys-primo.hosted.exlibrisgroup.com/primo_library/libweb/action/dlSearch.do?institution=UBO&vid=UBO&tab=library_catalogue&prefLang=no_NO&bulkSize=50&query=lsr10,exact,{{id}}">
-						Oria</a>
-				</li>
-				</ul>
-				{{tree}}
-				<em style="color:#999;">[Vise bokstatistikk, noter, osv…]</em>
-			';
-				
+
 			$tree = isset($this->data['broader'])
 				? '<h4>Overliggende:</h4>' . $this->brchildren($this->data['broader'], $this->identifier)
 				: '';
 
-			$o = $template;
-			$o = str_replace('{{id}}', $this->identifier, $o);
-			$o = str_replace('{{tree}}', $tree, $o);
-
-			return $o;
+			return View::make('concepts.related_ddc', array(
+				'bs_query' => 'bs.dewey+%3D+%22' . $this->identifier . '%22%20AND%20bs.bibkode=%22k%22',
+				'oria_query' => 'lsr10,exact,' . $this->identifier,
+				'tree' => $tree,
+				'id' => $this->identifier,
+			));
 		}
 
 		return '';
