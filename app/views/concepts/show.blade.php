@@ -6,7 +6,7 @@
 	<h2>
 		{{ $concept->vocabulary->label }}: {{ $concept->notation ?: $concept->prefLabel() }}
 	</h2>
-	<small>ID: {{ $concept->id }}</small>
+	<small style="color:#999;">Ikke-stabil ID: {{ $concept->id }}</small>
 
 	@if ($concept->draft)
 	<p class="bg-danger" style="padding:1em;">
@@ -26,7 +26,7 @@
 		</tr>
 		<tr>
 			<th>
-				Etiketter:
+				Termer:
 			</th>
 			<td>
 				<ul>
@@ -62,12 +62,18 @@
 		</tr>
 		<tr>
 			<th>
-				Ekstra:
+				Relatert:
 			</th>
 			<td>
 				<p>
 					{{ $concept->getRelatedContent() }}
 				</p>
+				<ul>
+					<li>
+						Søk mot Bibsys Ask som utnytter mappingene:<br>
+						<a href="{{ $concept->broadSearchUrl() }}">{{ $concept->broadSearchCQL() }}</a>
+					</li>
+				</ul>
 			</td>
 		</tr>
 	</table>

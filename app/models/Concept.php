@@ -212,4 +212,42 @@ class Concept extends BaseModel implements CommentableInterface {
 		return '';
 	}
 
+	/**
+	 * Get CQL query for a search that includes mapped concepts.
+	 *
+	 * @return string
+	 */
+	public function broadSearchCQL()
+	{
+		$concepts = array($this);
+		foreach ($this->sourceRelationships as $rel) {
+			$concepts[] = $rel->targetConcept;
+		}
+
+		$cql = array_map(function($concept) {
+			return str_replace(
+				array('{label}', '{identifier}'),
+				array($concept->prefLabel(), $concept->identifier),
+				$concept->vocabulary->bs_cql_query
+			);
+		}, $concepts);
+
+		return implode(' OR ', $cql);
+	}
+
+	/**
+	 * Get an OPAC search URL that includes mapped concepts.
+	 *
+	 * @return string
+	 */
+	public function broadSearchUrl()
+	{
+		// TODO: Lagre sentralt sted
+		$baseUrl = 'http://ask.bibsys.no/ask/action/result?cmd=&kilde=biblio&sortering=sortdate-&treffPrSide=50&cql={cql}';
+
+		$cql = $this->broadSearchCQL();
+
+		return str_replace('{cql}', urlencode($cql), $baseUrl);
+	}
+
 }
