@@ -269,13 +269,13 @@ class RelationshipsController extends BaseController {
 		{
 			case 'inline-turtle':
 				$query['format'] = 'turtle';
-				$args['directLink'] = './?' . http_build_query($query);
+				$args['directLink'] = './relationships?' . http_build_query($query);
 				$args['data'] = $this->rdfResponse($relationships, 'turtle');
 				return Response::view('relationships.turtle', $args);
 
 			case 'inline-rdfxml':
 				$query['format'] = 'rdfxml';
-				$args['directLink'] = './?' . http_build_query($query);
+				$args['directLink'] = './relationships?' . http_build_query($query);
 				$args['data'] = $this->rdfResponse($relationships, 'rdfxml');
 				return Response::view('relationships.rdfxml', $args);
 
@@ -316,7 +316,7 @@ class RelationshipsController extends BaseController {
 				$source = $graph->resource($rel->sourceConcept->uri(), 'skos:Concept');
 				$target = $graph->resource($rel->targetConcept->uri());
 
-				$source->set($predicate, $target);
+				$source->add($predicate, $target);
 
 				foreach ($rel->sourceConcept->labels as $lab) {
 					$source->addLiteral('skos:' . $lab->class, $lab->value, $lab->lang);
