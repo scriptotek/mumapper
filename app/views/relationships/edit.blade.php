@@ -23,7 +23,7 @@
   <div class="col-sm-8" style="padding-top:.4em;">
 
     <div style="float:right; margin-left: .5em;">
-      @if ($nextId)
+      @if ($nextId != -1)
         <a class="btn btn-warning" href="{{ 
           URL::action('RelationshipsController@show', $nextId) . $query
         }}">
