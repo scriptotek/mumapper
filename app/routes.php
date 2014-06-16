@@ -51,6 +51,14 @@ Route::get('/concepts/{vocabulary}/{id}', 'ConceptsController@getShow');
 
 Route::get('/activity/comments', 'ActivityController@getComments');
 
+Route::get('/relationships/edit/{id}', function($id) {
+	return Redirect::action('RelationshipsController@show', $id);
+});
+Route::get('/relationships/show/{id}', function($id) {
+	return Redirect::action('RelationshipsController@show', $id);
+});
+
+
 Route::get('/relationships/{id}', 'RelationshipsController@show')
 	->where('id', '[0-9]+');
 
