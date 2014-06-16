@@ -6,7 +6,6 @@
 	"require": {
 		"laravel/framework": "4.1.*",
         "artdarek/oauth-4-laravel": "dev-master",
-        "jenssegers/mongodb": "dev-master",
         "willdurand/negotiation": "1.2.*",
         "felixkiss/uniquewith-validator": "1.0.*",
         "wikibase/easyrdf_lite": "dev-master"
