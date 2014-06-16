@@ -90,29 +90,26 @@
 
   </header>
 
-
-
     <div>
       @section('sidebar')
 
       @if (!empty($status))
-        <div class="alert alert-info" style="display:none;">
+        <div class="alert alert-info">
           <button type="button" class="close" data-dismiss="alert">&times;</button>
           {{$status}}
         </div>
       @endif
 
       @if ($e = $errors->all('<li>:message</li>'))
-        <div class="alert alert-danger" style="display:none;">
+        <div class="alert alert-danger">
           <button type="button" class="close" data-dismiss="alert">&times;</button>
-          Kunne ikke lagre fordi:
+          Oi!
           <ul>
           @foreach ($e as $msg)
             {{$msg}}
           @endforeach
           </ul>
         </div>
-
       @endif
 
       @show
