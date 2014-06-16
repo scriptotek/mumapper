@@ -593,6 +593,10 @@ class RelationshipsController extends BaseController {
 			->where('relationships.id','=',$id)
 			->first();
 
+		if (!$current) {
+			return App::abort(404, 'Relationship not found');
+		}
+
 		// 'next' is stored in the query string on saves. The reason is that a save will cause
 		// a different ordering if the list was sorted by 'last modified'
 		$n = Input::get('next');
@@ -608,7 +612,11 @@ class RelationshipsController extends BaseController {
 				})
 				->first();
 
-			$nextId = $next->id;
+			if ($next) {
+				$nextId = $next->id;
+			} else {
+				$nextId = -1;
+			}
 
 		}
 
