@@ -13,8 +13,8 @@ return array(
 
 	'states' => array(
 		'suggested' => 'suggested',
-		'exact' => 'exact equivalence (EQ)',
-		'close' => 'inexact equivalence (EQ~)',
+		'exact' => 'exact equivalence (=EQ)',
+		'close' => 'inexact equivalence (~EQ)',
 		'broad' => 'broader (BM)',
 		'narrow' => 'narrower (NM)',
 		'related' => 'related (RM)',
