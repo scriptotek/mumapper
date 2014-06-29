@@ -36,15 +36,31 @@ App::missing(function(NotFoundHttpException $exception)
     ), 404);
 });
 
+Route::filter('force.ssl', function()
+{
+	if(!Request::secure())
+	{
+		return Redirect::secure(Request::getRequestUri());
+	}
+});
+
 Route::get('/', function()
 {
 	return Redirect::action('RelationshipsController@index');
 });
 
 
-Route::get('/login', 'UsersController@getLogin');
-Route::post('/login', 'UsersController@postLogin');
-Route::get('/login-using-google', 'UsersController@getLoginUsingGoogle');
+Route::group(array('before' => 'force.ssl'), function()
+{
+	Route::get('/login', array(
+		'as' => 'login',
+		'uses' => 'UsersController@getLogin',
+	));
+
+	Route::post('/login', 'UsersController@postLogin');
+	Route::get('/login-using-google', 'UsersController@getLoginUsingGoogle');
+});
+
 
 Route::get('/concepts/search', 'ConceptsController@getSearch');
 Route::get('/concepts/{vocabulary}/{id}', 'ConceptsController@getShow');
