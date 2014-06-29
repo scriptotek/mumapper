@@ -73,7 +73,15 @@ Route::get('/relationships/edit/{id}', function($id) {
 Route::get('/relationships/show/{id}', function($id) {
 	return Redirect::action('RelationshipsController@show', $id);
 });
+Route::get('/tags/{id}', function($id) {
+	return Redirect::action('TagsController@getShow', $id);
+});
+Route::get('/tags', function() {
+	return Redirect::action('TagsController@getIndex');
+});
 
+Route::get('/lists/{id}', 'TagsController@getShow')
+	->where('id', '[0-9]+');
 
 Route::get('/relationships/{id}', 'RelationshipsController@show')
 	->where('id', '[0-9]+');
@@ -87,7 +95,7 @@ Route::group(array('before' => 'auth'), function()
 	Route::controller('comments', 'CommentsController');
 	Route::get('/activity/{user}', 'ActivityController@getIndex');
 	Route::controller('activity', 'ActivityController');
-	Route::controller('tags', 'TagsController');
 });
 
 Route::get('/relationships', 'RelationshipsController@index');
+Route::get('/lists', 'TagsController@getIndex');

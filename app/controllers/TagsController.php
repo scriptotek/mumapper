@@ -53,6 +53,11 @@ class TagsController extends BaseController {
 	{
 		$tag = Tag::findOrFail($id);
 
+		return Redirect::to(
+			URL::action('RelationshipsController@index') . '?tags%5B%5D=' . $tag->id . '&format=worklist'
+		);
+
+
 		return View::make('tags.show', compact('tag'));
 	}
 
