@@ -61,6 +61,9 @@ Route::group(array('before' => 'force.ssl'), function()
 	Route::get('/login-using-google', 'UsersController@getLoginUsingGoogle');
 });
 
+Route::get('/concepts/RT/REAL{id}', function($id) {
+	return Redirect::action('ConceptsController@getShow', array('RT', $id));
+});
 
 Route::get('/concepts/search', 'ConceptsController@getSearch');
 Route::get('/concepts/{vocabulary}/{id}', 'ConceptsController@getShow');
