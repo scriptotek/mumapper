@@ -26,7 +26,7 @@ class AddVocabularyBsindex extends Migration {
 	public function down()
 	{
 		Schema::table('vocabularies', function(Blueprint $table) {
-            $table->string('bs_cql_query');
+            $table->dropColumn('bs_cql_query');
 		});
 	}
 
