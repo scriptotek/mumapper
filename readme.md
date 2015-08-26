@@ -1,7 +1,11 @@
 **μmapper** is a collaborative database for crosswalks between controlled vocabularies,
-developed to support <a href="http://www.ub.uio.no/om/prosjekter/deweymapping/index.html">a project</a>
-investigating the feasibility of mapping *Realfagstermer* to Dewey. Realfagstermer is the controlled vocabulary
+developed to support [a project](http://www.ub.uio.no/om/prosjekter/deweymapping/index.html)
+investigating strategies for mapping [Realfagstermer](http://www.ub.uio.no/om/tjenester/emneord/realfagstermer.html) to Dewey. Realfagstermer is the controlled subject headings vocabulary
 of the <a href="http://www.ub.uio.no/english/about/organisation/ureal/">University of Oslo Science Library</a>.
+
+It's currently deployed at [mapper.biblionaut.net](https://mapper.biblionaut.net/), but don't expect that URL to be stable.
+
+Our crosswalks (work-in-progress) are published [at DataHub](http://datahub.io/dataset/realfagstermer).
 
 Installation:
 
