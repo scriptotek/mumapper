@@ -13,8 +13,8 @@ return array(
 
 	'states' => array(
 		'suggested' => 'foreslått',
-		'exact' => 'ekvivalens (EQ)',
-		'close' => 'nær ekvivalens (EQ~)',
+		'exact' => 'ekvivalens (=EQ)',
+		'close' => 'nær ekvivalens (~EQ)',
 		'broad' => 'har overordnet (BM)',
 		'narrow' => 'har underordnet (NM)',
 		'related' => 'relatert (RM)',

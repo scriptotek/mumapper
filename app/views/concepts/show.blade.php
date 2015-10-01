@@ -3,6 +3,10 @@
 
 @section('content')
 
+<article
+  vocab="http://www.w3.org/2004/02/skos/core#"
+  typeof="Concept"
+  resource="{{ $concept->uri() }}">
 	<h2>
 		{{ $concept->vocabulary->label }}: {{ $concept->notation ?: $concept->prefLabel() }}
 	</h2>
@@ -32,10 +36,10 @@
 				<ul>
 					@foreach ($concept->labels as $label)
 					<li>
-						<span style="color: #999;">
-							{{ $label->class }} ({{ $label->lang }}):
-						</span>
-						{{ $label->value }}
+						<span style="color: #999;">{{ $label->class }} ({{ $label->lang }}):</span>
+						<span
+						 property="{{ $label->class }}"
+						 lang="{{ $label->lang }}">{{ $label->value }}</span>
 					</li>
 					@endforeach
 				</ul>		
@@ -48,7 +52,7 @@
 			<td>
 				<ul>
 					@foreach ($concept->sourceRelationships as $rel)
-					<li>
+					<li property="{{ $rel->stateAsSkos() }}" resource="{{ $rel->targetConcept->uri() }}" >
 						{{ $rel->representationFrom($concept) }}
 					</li>
 					@endforeach
@@ -65,9 +69,7 @@
 				Relatert:
 			</th>
 			<td>
-				<p>
-					{{ $concept->getRelatedContent() }}
-				</p>
+				{{ $concept->getRelatedContent() }}
 				<ul>
 					<li>
 						Søk mot Bibsys Ask som utnytter mappingene:<br>
@@ -78,11 +80,7 @@
 		</tr>
 	</table>
 
-	
-	<ul>
-		
-	</ul>
-
+</article>
 
 <pre><code class="language-xml">{{{ $concept->rdfRepresentation() }}}</code></pre>
 

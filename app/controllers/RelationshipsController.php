@@ -6,7 +6,18 @@ class RelationshipsController extends BaseController {
 
 	protected $defaultSourceVocabulary = 1;
 
-	protected function getQueryBuilder()
+	/**
+	 * Generate a query builder to get relationships with their associated
+	 * models (concepts, labels, ...)
+	 *
+	 * If `$id` is specified, a single relationship will be queried.
+	 * Otherwise parameters in user input (query string parameters)
+	 * will be used to generate the query.
+	 *
+	 * @param int $id Relationship id (optional)
+	 * @return array
+	 */
+	protected function getQueryBuilder($id = null)
 	{
 
 		$reviewStates = array(
@@ -85,59 +96,70 @@ class RelationshipsController extends BaseController {
 			},
 		]);
 
-		if (is_array($selectedStates)) {
-			$builder->whereIn('latest_revision_state', $selectedStates);
-		}
+		if (!is_null($id)) {
 
-		if (is_array($targetVocabularies)) {
-			$builder->whereHas('targetConcept', function ($q) use ($targetVocabularies) {
-				$q->whereIn('vocabulary_id', $targetVocabularies);
-			});
-		}
+			$builder->where('relationships.id','=',$id);
 
-		if ($selectedTags) {
-			if ($selectedTagsOp == 'and') {
-				foreach ($selectedTags as $selectedTag) {
-					$builder->whereHas('tags', function ($q) use ($selectedTag) {
-						$q->where('tag_id', $selectedTag);
-					});
-				}
-			} else {
-				$builder->whereHas('tags', function ($q) use ($selectedTags) {
-					$q->whereIn('tag_id', $selectedTags);
+		} else {
+
+			if (is_array($selectedStates)) {
+				$builder->whereIn('latest_revision_state', $selectedStates);
+			}
+
+			if (is_array($targetVocabularies)) {
+				$builder->whereHas('targetConcept', function ($q) use ($targetVocabularies) {
+					$q->whereIn('vocabulary_id', $targetVocabularies);
 				});
 			}
-		}
 
-		if ($labelText) {
-			$builder->whereHas('sourceConcept', function ($q) use ($labelText) {
-				$q->whereHas('labels', function($q)  use ($labelText) {
-					$q->where('value', 'LIKE', $labelText);
+			if ($selectedTags) {
+				if ($selectedTagsOp == 'and') {
+					foreach ($selectedTags as $selectedTag) {
+						$builder->whereHas('tags', function ($q) use ($selectedTag) {
+							$q->where('tag_id', $selectedTag);
+						});
+					}
+				} else {
+					$builder->whereHas('tags', function ($q) use ($selectedTags) {
+						$q->whereIn('tag_id', $selectedTags);
+					});
+				}
+			}
+
+			if ($labelText) {
+				$builder->whereHas('sourceConcept', function ($q) use ($labelText) {
+					$q->whereHas('labels', function($q)  use ($labelText) {
+						//$q->where('value', 'LIKE', $labelText);
+						$q->whereRaw('value LIKE _utf8' . DB::connection()->getPdo()->quote($labelText . '%') . ' COLLATE utf8_danish_ci');
+					});
+
+				})->orWhereHas('targetConcept', function ($q) use ($labelText) {
+					$q->whereHas('labels', function($q)  use ($labelText) {
+						//$q->where('value', 'LIKE', $labelText);
+						$q->whereRaw('value LIKE _utf8' . DB::connection()->getPdo()->quote($labelText . '%') . ' COLLATE utf8_danish_ci');
+					});
 				});
-			})->orWhereHas('targetConcept', function ($q) use ($labelText) {
-				$q->whereHas('labels', function($q)  use ($labelText) {
-					$q->where('value', 'LIKE', $labelText);
+			}
+
+			if ($notation) {
+				$builder->whereHas('targetConcept', function ($q) use ($notation) {
+					$q->where('notation', 'LIKE', $notation);
 				});
-			});
-		}
+			}
 
-		if ($notation) {
-			$builder->whereHas('targetConcept', function ($q) use ($notation) {
-				$q->where('notation', 'LIKE', $notation);
-			});
-		}
+			if ($selectedReviewState == 'pending') {
+				$builder->whereHas('latestRevision', function ($q) {
+					$q->whereNull('reviewed_at');
+				});
+				$builder->where('latest_revision_state', '!=', 'suggested');
+				$builder->where('latest_revision_state', '!=', 'rejected'); // ???
 
-		if ($selectedReviewState == 'pending') {
-			$builder->whereHas('latestRevision', function ($q) {
-				$q->whereNull('reviewed_at');
-			});
-			$builder->where('latest_revision_state', '!=', 'suggested');
-			$builder->where('latest_revision_state', '!=', 'rejected'); // ???
+			} else if ($selectedReviewState == 'reviewed') {
+				$builder->whereHas('latestRevision', function ($q) {
+					$q->whereNotNull('reviewed_at');
+				});
+			}
 
-		} else if ($selectedReviewState == 'reviewed') {
-			$builder->whereHas('latestRevision', function ($q) {
-				$q->whereNotNull('reviewed_at');
-			});
 		}
 
 		$sel = array(
@@ -586,15 +608,12 @@ class RelationshipsController extends BaseController {
 		$q = Input::all();
 		if (isset($q['next'])) unset($q['next']);
 		$query = '?' . http_build_query($q);
-		list($args, $builder, $sort) = $this->getQueryBuilder();
+		list($args, $builder, $sort) = $this->getQueryBuilder($id);
 
-
-		$current = with(clone $builder)
-			->where('relationships.id','=',$id)
-			->first();
+		$current = $builder->first();
 
 		if (!$current) {
-			return App::abort(404, 'Relationship not found');
+			return App::abort(404, 'Relationship not found: ' . $id);
 		}
 
 		// 'next' is stored in the query string on saves. The reason is that a save will cause
@@ -603,8 +622,9 @@ class RelationshipsController extends BaseController {
 		if ($n) {
 			$nextId = $n;
 		} else {
+			list($args, $builder, $sort) = $this->getQueryBuilder();
 
-			$next = with(clone $builder)
+			$next = $builder
 				->where($sort['name'], ($sort['order'] == 'asc' ? '>=' : '<='), $current->{$sort['alias']})
 				->where(function($query) use ($current, $sort) {
 					$query->where($sort['name'], ($sort['order'] == 'asc' ? '>' : '<'), $current->{$sort['alias']})

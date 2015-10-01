@@ -243,7 +243,7 @@ class Concept extends BaseModel implements CommentableInterface {
 	public function broadSearchUrl()
 	{
 		// TODO: Lagre sentralt sted
-		$baseUrl = 'http://ask.bibsys.no/ask/action/result?cmd=&kilde=biblio&sortering=sortdate-&treffPrSide=50&cql={cql}';
+		$baseUrl = 'http://ask.bibsys.no/ask/action/result?cmd=&amp;kilde=biblio&amp;sortering=sortdate-&amp;treffPrSide=50&amp;cql={cql}';
 
 		$cql = $this->broadSearchCQL();
 

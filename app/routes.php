@@ -36,20 +36,55 @@ App::missing(function(NotFoundHttpException $exception)
     ), 404);
 });
 
+Route::filter('force.ssl', function()
+{
+	if(!Request::secure())
+	{
+		return Redirect::secure(Request::getRequestUri());
+	}
+});
+
 Route::get('/', function()
 {
 	return Redirect::action('RelationshipsController@index');
 });
 
 
-Route::get('/login', 'UsersController@getLogin');
-Route::post('/login', 'UsersController@postLogin');
-Route::get('/login-using-google', 'UsersController@getLoginUsingGoogle');
+Route::group(array('before' => 'force.ssl'), function()
+{
+	Route::get('/login', array(
+		'as' => 'login',
+		'uses' => 'UsersController@getLogin',
+	));
+
+	Route::post('/login', 'UsersController@postLogin');
+	Route::get('/login-using-google', 'UsersController@getLoginUsingGoogle');
+});
+
+Route::get('/concepts/RT/REAL{id}', function($id) {
+	return Redirect::action('ConceptsController@getShow', array('RT', $id));
+});
 
 Route::get('/concepts/search', 'ConceptsController@getSearch');
 Route::get('/concepts/{vocabulary}/{id}', 'ConceptsController@getShow');
 
 Route::get('/activity/comments', 'ActivityController@getComments');
+
+Route::get('/relationships/edit/{id}', function($id) {
+	return Redirect::action('RelationshipsController@show', $id);
+});
+Route::get('/relationships/show/{id}', function($id) {
+	return Redirect::action('RelationshipsController@show', $id);
+});
+Route::get('/tags/{id}', function($id) {
+	return Redirect::action('TagsController@getShow', $id);
+});
+Route::get('/tags', function() {
+	return Redirect::action('TagsController@getIndex');
+});
+
+Route::get('/lists/{id}', 'TagsController@getShow')
+	->where('id', '[0-9]+');
 
 Route::get('/relationships/{id}', 'RelationshipsController@show')
 	->where('id', '[0-9]+');
@@ -63,7 +98,7 @@ Route::group(array('before' => 'auth'), function()
 	Route::controller('comments', 'CommentsController');
 	Route::get('/activity/{user}', 'ActivityController@getIndex');
 	Route::controller('activity', 'ActivityController');
-	Route::controller('tags', 'TagsController');
 });
 
 Route::get('/relationships', 'RelationshipsController@index');
+Route::get('/lists', 'TagsController@getIndex');
