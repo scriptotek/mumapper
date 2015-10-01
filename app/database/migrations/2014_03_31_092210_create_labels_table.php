@@ -22,7 +22,7 @@ class CreateLabelsTable extends Migration {
 			$table->enum('class', array('prefLabel', 'altLabel', 'hiddenLabel'));
 			$table->string('lang');
 			$table->string('value');
-			$table->unique(array('concept_id', 'lang', 'value'));
+			$table->unique(array('concept_id', 'class', 'lang', 'value'));
 			$table->timestamps();
 
 			$table->foreign('concept_id')
