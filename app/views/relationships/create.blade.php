@@ -20,7 +20,8 @@
     </div>--}}
 
     <div class="row">
-    <div class="form-group col-sm-4">
+    <div class="form-group col-sm-4 has-error">
+
         <label class="control-label" for="sourceConceptText">
             Kildebegrep
         </label>
@@ -51,7 +52,7 @@
     </div>
 
 
-    <div class="form-group col-sm-4">
+    <div class="form-group col-sm-4 has-error">
         <label class="control-label" for="targetConceptText">
             Målbegrep
         </label>
@@ -70,7 +71,7 @@
     </div>
 
     <div>
-        <button type="submit" class="btn btn-primary">
+        <button type="submit" class="btn btn-primary" disabled>
             Opprett
         </button>        
     </div>
@@ -86,7 +87,8 @@
         url: '/concepts/search?vocabulary=1&q=%QUERY', 
         idfield: 'source_concept',
         descfield: 'sourceConceptDesc'
-      },
+      }
+      ,
       { name: 'targetConcept', 
         url: '/concepts/search?excludevocabulary=1&q=%QUERY',
         idfield: 'target_concept', 
@@ -94,12 +96,43 @@
       }
     ];
 
+    var validFields = {};
+
+    function checkValidity() {
+      var disabled = false;
+      config.forEach(function(c) {
+        if (!validFields[c.name]) disabled = true;
+      });
+      $('button[type="submit"]').prop('disabled', disabled);
+    }
+
     config.forEach(function(c) {
+
+      validFields[c.name] = false;
+
+      var selectedConcept = null;
+
+      function selectConcept(field, concept) {
+        selectedConcept = concept;
+        if (concept != null) {
+          console.log('selectConcept: ' + concept.identifier + ' - ' + concept.label);
+          $('input[name="' + field.idfield + '"]').val(concept.id);
+          $('#' + field.descfield).text(concept.vocabulary + ': ' + concept.identifier + ' – ' + concept.label);
+          $('#' + field.name).parent().removeClass('has-error').addClass('has-success'); 
+          validFields[c.name] = true;
+        } else {
+          console.log('selectConcept: null');
+          $('input[name="' + field.idfield + '"]').val('');
+          $('#' + field.descfield).text('');          
+          $('#' + field.name).parent().removeClass('has-success').addClass('has-error'); 
+          validFields[c.name] = false;
+        }
+        checkValidity();
+      }
 
       var hound = new Bloodhound({
         datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
         queryTokenizer: Bloodhound.tokenizers.whitespace,
-        //prefetch: '../data/films/post_1960.json',
         limit: 10,
         remote: {
           url: c.url,
@@ -111,7 +144,9 @@
       });
       hound.initialize();
 
-      $('#' + c.name +' .typeahead')
+      var txtField = $('#' + c.name +' .typeahead')
+
+      txtField
           .typeahead({
             minLength: 2
           }, {
@@ -120,8 +155,8 @@
             source: hound.ttAdapter(),
             templates: {
               empty: [
-                '<div class="empty-message">',
-                'ingen treff i prefLabel (nb)',
+                '<div class="tt-empty">',
+                '<p>Ingen treff</p>',
                 '</div>'
               ].join('\n'),
               suggestion: function(o) {
@@ -131,23 +166,45 @@
             }
           })
          .on('typeahead:selected', function(e, s, d) {
+            console.log('typeahead:selected');
             if (s) {
-              console.log($('#' + c.idfield));
-              $('input[name="' + c.idfield + '"]').val(s.id);
-              $('#' + c.descfield).text(s.vocabulary + ': ' + s.identifier + ' – ' + s.label);            
+              selectConcept(c, s);
             }
          })
          .on('typeahead:autocompleted', function(e, s, d) {
+            console.log('typeahead:autocompleted');
             if (s) {
-              $('input[name="' + c.idfield + '"]').val(s.id);
-              $('#' + c.descfield).text(s.vocabulary + ': ' + s.identifier + ' – ' + s.label);
+              selectConcept(c, s);
             }
          })
          .on('typeahead:opened', function() {
-
+            console.log('typeahead:opened');
+            //console.log(hound.index.datums);
           })
          .on('typeahead:closed', function() {
-             
+            console.log('typeahead:closed');
+         })
+         .on('typeahead:matched', function(e, datum) {
+            console.log('GOT typeahead:matched');
+            selectConcept(c, datum);
+         })
+         .on('keyup', function (e) {
+            var v = txtField.val();
+            //console.log(selectedConcept);
+            if (selectedConcept && v != selectedConcept.label && v != selectedConcept.identifier) {
+              selectConcept(c, null);
+            }
+            window.hound = hound;
+
+            var matches = hound.index.get(v);
+
+            // console.log(v);
+            // console.log(matches);
+            // console.log(hound.index);
+            // matches = hound.sorter(matches).slice(0, 10);
+            // console.log(matches);
+            
+            return true;
          });
 
 

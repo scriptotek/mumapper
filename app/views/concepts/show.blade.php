@@ -15,7 +15,21 @@
 	@if ($concept->draft)
 	<p class="bg-danger" style="padding:1em;">
 		<i class="glyphicon glyphicon-exclamation-sign"></i>
-		Dette begrepet ble ikke funnet i originalvokabularet sitt.
+		Dette begrepet ble ikke funnet i noe autoritetsregister.
+		Det kan være ugyldig.
+		{{---
+		<a href="{{ URL::action('ConceptsController@getUpdateFromSparql', 
+			array($concept->vocabulary->label, $concept->identifier)) }}">(sjekk på nytt)</a>
+			--}}
+	</p>
+	@else
+	<p class="bg-success" style="padding:1em;">
+		<i class="glyphicon glyphicon-exclamation-sign"></i>
+		Dette begrepet ble funnet i et autoritetsregister.
+		{{-- 
+		<a href="{{ URL::action('ConceptsController@getUpdateFromSparql', 
+			array($concept->vocabulary->label, $concept->identifier)) }}">(sjekk på nytt)</a>
+			--}}
 	</p>
 	@endif
 
