@@ -5,13 +5,20 @@
 class Concept extends BaseModel implements CommentableInterface {
 
 	/**
+	 * The attributes that are mass assignable.
+	 *
+	 * @var array
+	 */
+	protected $fillable = array('vocabulary_id', 'identifier');
+
+	/**
 	 * Validation rules
 	 * 
 	 * @var Array
 	 */
 	protected static $rules = array(
 		'vocabulary_id' => 'required|integer|exists:vocabularies,id',
-		'identifier'    => 'required|unique_with:concepts,vocabulary_id',
+		'identifier'    => 'required|unique_with:concepts,vocabulary_id,{id}',
 	);
 
 	// public $data;

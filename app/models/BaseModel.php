@@ -48,7 +48,16 @@ class BaseModel extends \Eloquent {
      */
     public function validate()
     {
-        $v = $this->validator->make($this->attributes, static::$rules);
+        $rules = array();
+        foreach (static::$rules as $k => $v) {
+            if ($this->id) {
+                $rules[$k] = str_replace(',{id}', ',' . $this->id, $v);
+            } else {
+                $rules[$k] = str_replace(',{id}', '', $v);
+            }
+        }
+
+        $v = $this->validator->make($this->attributes, $rules);
 
         if ($v->passes())
         {

@@ -29,7 +29,7 @@ class ConceptsController extends BaseController {
 	}
 
 	/**
-	 * Store a newly created concept in storage.
+	 * Store a set of concepts in storage.
 	 *
 	 * @return Response
 	 */
@@ -52,10 +52,25 @@ class ConceptsController extends BaseController {
 				continue;
 			}
 
-			$concept = new Concept;
-			$concept->vocabulary_id = array_get($data, 'vocabulary');
-			$concept->identifier = array_get($data, 'identifier');
+			// Log::debug('Updating concept ' . array_get($data, 'identifier'));
+
+			$concept = Concept::firstOrCreate(array(
+				'vocabulary_id' => array_get($data, 'vocabulary'),
+				'identifier' => array_get($data, 'identifier'),
+			));
+
+			if (is_null($concept)) {
+					return Response::JSON(array(
+						'error' => array(
+							'message' => 'Couldnt create concept: ' . array_get($data, 'identifier')
+						)
+					));
+
+			}
 			$concept->data = array_get($data, 'data');
+			$concept->notation = array_get($data, 'notation');
+
+			// Log::debug(' - Saving');
 			if (!$concept->save()) {
 				//return Redirect::route('concepts.index');
 				$out[] = array(
@@ -66,16 +81,36 @@ class ConceptsController extends BaseController {
 				continue;
 			}
 
+			// Log::debug(' - Removing labels');
+
 			$concept_id = $concept->id;
+			foreach ($concept->labels as $label) {
+				$label->delete();
+			}
+
+			// Log::debug(' - Updated, id : ' . $concept_id);
 
 			foreach ($data['labels'] as $l) {
+				if (!$concept_id) {
+					return Response::JSON(array(
+						'error' => array(
+							'message' => 'No concept id set: ' . array_get($data, 'identifier')
+						)
+					));
+				}
 				$label = new Label;
 				$label->concept_id = $concept_id;
 				$label->class = $l['role'];
 				$label->lang = $l['lang'];
 				$label->value = $l['value'];
+
+				// Log::debug(' - Adding label: ' . $l['value']);
+
 				if (!$label->save()) {
 					//return Redirect::route('concepts.index');
+
+					// Log::debug(' - Failed to save');
+
 					$concept->delete();
 					$out[] = array(
 						'store' => 'failed',
@@ -83,7 +118,7 @@ class ConceptsController extends BaseController {
 						'draft_label' => $label->toArray(),
 						'validation_errors' => $label->getErrors()->all(),
 					);
-					continue;
+					continue 2;
 				}
 			}
 
