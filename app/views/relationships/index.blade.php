@@ -69,7 +69,7 @@
             </div>
         </div>
 
-der kilde eller målbegrep har
+der kildebegrep har
         <div class="form-group">
             <label class="col-sm-2 control-label" for="state">term:</label>
             <div class="col-sm-6">
@@ -82,6 +82,8 @@ der kilde eller målbegrep har
                 Støtter trunkering foran og bak med %.
             </div>
         </div>
+
+og målbegrep har
 
         <div class="form-group">
             <label class="col-sm-2 control-label" for="state">notasjon:</label>

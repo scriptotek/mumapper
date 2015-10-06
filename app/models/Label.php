@@ -13,7 +13,7 @@ class Label extends BaseModel {
 		'concept_id' => 'required|integer',
 		'class'      => 'required|in:prefLabel,altLabel',
 		'lang'       => 'required|alpha',
-		'value'      => 'required|unique_with:labels,concept_id,lang',
+		'value'      => 'required|unique_with:labels,concept_id,class,lang',
 	);
 
 	// Don't forget to fill this array
