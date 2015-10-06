@@ -3,8 +3,8 @@
 return array(
 
 	'title' => 'Relationship',
-	'source_vocabulary_concept' => 'Concept in source vocabulary',
-	'target_vocabulary_concept' => 'Concept in target vocabulary',
+	'source_vocabulary_concept' => 'Source concept',
+	'target_vocabulary_concept' => 'Target concept',
 	'external_resources' => 'External resources',
 	'comment' => 'Comment',
 	'other_relationships' => 'Other relationships',

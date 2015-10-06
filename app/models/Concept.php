@@ -166,57 +166,64 @@ class Concept extends BaseModel implements CommentableInterface {
 		return $t;
 	}
 
+	public function getNotes()
+	{
+		return isset($this->data['notes']) ? $this->data['notes'] : array();
+	}
+
 	public function getRelatedContent()
 	{
-		// TODO: move into templates!
+		$label = $this->labels()
+				->where('lang','nb')
+				->where('class', 'prefLabel')
+				->first();
+
+		$data = array(
+			'concept' => $this,
+			'pref_label' => $label->value,
+		);
 
 		if ($this->vocabulary->label == 'RT') {
+			$data['bs_query'] = 'bs.lokoeo-frase+%3D+%22' . $label->value . '%22%20AND%20bs.bibkode=%22k%22';
+			$data['oria_query'] = 'lsr20,exact,' . $label->value;
+			$data['primo_field'] = 'lsr20';
 
-			$label = $this->labels()
-				->where('lang','nb')
-				->where('class', 'prefLabel')
-				->first();
-
-			if ($label) {
-				return View::make('concepts.related', array(
-					'bs_query' => 'bs.lokoeo-frase+%3D+%22' . $label->value . '%22%20AND%20bs.bibkode=%22k%22',
-					'oria_query' => 'lsr20,exact,' . $label->value,
-				));
-			} else {
-				return ''; // Søk i BIBSYS ikke mulig uten etikett
-			}
-
-		} else if ($this->vocabulary->label == 'TEK') {
-
-			$label = $this->labels()
-				->where('lang','nb')
-				->where('class', 'prefLabel')
-				->first();
-
-			if ($label) {
-				return View::make('concepts.related', array(
-					'bs_query' => 'bs.tek-frase+%3D+%22' . $label->value . '%22',
-					'oria_query' => 'lsr12,exact,' . $label->value,
-				));
-			} else {
-				return ''; // Søk i BIBSYS ikke mulig uten etikett
-			}
+		} else if ($this->vocabulary->label == 'HUME') {
+			$data['bs_query'] = 'bs.humord+%3D+%22' . $label->value . '%22';
+			$data['oria_query'] = 'lsr12,exact,' . $label->value;
+			$data['primo_field'] = 'lsr14';
 
 		} else if ($this->vocabulary->label == 'DDK23') {
-
-			$tree = isset($this->data['broader'])
-				? '<h4>Overliggende:</h4>' . $this->brchildren($this->data['broader'], $this->identifier)
-				: '';
-
-			return View::make('concepts.related_ddc', array(
-				'bs_query' => 'bs.dewey+%3D+%22' . $this->identifier . '%22%20AND%20bs.bibkode=%22k%22',
-				'oria_query' => 'lsr10,exact,' . $this->identifier,
-				'tree' => $tree,
-				'id' => $this->identifier,
-			));
+			$data['bs_query'] = 'bs.dewey+%3D+%22' . $this->identifier . '%22%20AND%20bs.bibkode=%22k%22';
+			$data['oria_query'] = 'lsr10,exact,' . $this->identifier;
+			$data['primo_field'] = 'lsr10';
 		}
 
-		return '';
+		return View::make('concepts.related', $data);
+	}
+
+	public function extendedRepresentation($role, $relId)
+	{
+		$relationships = array();
+		if ($role == 'source') {
+			$relationships = $this->sourceRelationships->all();
+		} else if ($role == 'target') {
+			$relationships = $this->targetRelationships->all();
+		}
+		$relationships = array_filter($relationships, function($rel) use ($relId) {
+			return $rel->id != $relId;
+		});
+
+		$tree = isset($this->data['broader'])
+				? $this->brchildren($this->data['broader'], $this->identifier)
+				: '';
+
+		return View::make('concepts.extended_representation', array(
+			'concept' => $this,
+			'tree' => $tree,
+			'notes' => $this->getNotes(),
+			'otherRelationships' => $relationships,
+		));
 	}
 
 	/**

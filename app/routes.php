@@ -83,6 +83,8 @@ Route::get('/tags', function() {
 	return Redirect::action('TagsController@getIndex');
 });
 
+Route::get('/apis/snl', 'ApiController@getSnl');
+
 Route::get('/lists/{id}', 'TagsController@getShow')
 	->where('id', '[0-9]+');
 
