@@ -36,13 +36,20 @@
 				<ul>
 					@foreach ($concept->labels as $label)
 					<li>
-						<span style="color: #999;">{{ $label->class }} ({{ $label->lang }}):</span>
+					<span style="color: #999;">{{ $label->class }} ({{ $label->lang }}):</span>
 						<span
 						 property="{{ $label->class }}"
-						 lang="{{ $label->lang }}">{{ $label->value }}</span>
+						 lang="{{ $label->lang }}">
+
+					@if(($label->class == 'altLabel') && ($concept->vocabulary->label == 'DDK23'))
+						<em>(sensurert)</em>
+					@else
+						{{ $label->value }}
+					@endif
+					</span>
 					</li>
 					@endforeach
-				</ul>		
+				</ul>
 			</td>
 		</tr>
 		<tr>
@@ -82,7 +89,7 @@
 
 </article>
 
-<pre><code class="language-xml">{{{ $concept->rdfRepresentation() }}}</code></pre>
+{{-- <pre><code class="language-xml">{{{ $concept->rdfRepresentation() }}}</code></pre> --}}
 
 <script>hljs.initHighlightingOnLoad();</script>
 
