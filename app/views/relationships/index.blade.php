@@ -21,9 +21,11 @@
         <div class="form-group">
             <label class="col-sm-2 control-label">kildevokabular:</label>
             <div class="col-sm-10">
-                <p class="form-control-static">
-                    {{ $sourceVocabulary->label }}
-                </p>
+                {{ Form::select('sourceVocabularies[]', $vocabularyList, $sourceVocabularies,
+                    array('class' => 'selectpicker',
+                        'multiple' => true,
+                        'data-none-selected-text' => 'alle'
+                    )) }}
             </div>
         </div>
 

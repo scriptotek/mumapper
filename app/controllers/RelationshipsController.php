@@ -4,8 +4,6 @@ use Carbon\Carbon;
 
 class RelationshipsController extends BaseController {
 
-	protected $defaultSourceVocabulary = 1;
-
 	/**
 	 * Generate a query builder to get relationships with their associated
 	 * models (concepts, labels, ...)
@@ -27,7 +25,15 @@ class RelationshipsController extends BaseController {
 		);
 		$selectedReviewState = Input::get('reviewstate', 'all');
 
-		$sourceVocabulary = Vocabulary::find($this->defaultSourceVocabulary);
+		$sourceVocabularies = Input::get('sourceVocabularies');
+		if ($sourceVocabularies) {
+			foreach ($sourceVocabularies as $voc) {
+				$voc = Vocabulary::find($voc);
+				if (!$voc) {
+					return App::abort(404, 'Invalid vocabulary given.');
+				}
+			}
+		}
 
 		$targetVocabularies = Input::get('targetVocabularies');
 		if ($targetVocabularies) {
@@ -50,9 +56,7 @@ class RelationshipsController extends BaseController {
 
 		$vocabularyList = [];
 		foreach (Vocabulary::all() as $v) {
-			if ($v->id != $sourceVocabulary->id) {
-				$vocabularyList[$v->id] = $v->label;
-			}
+			$vocabularyList[$v->id] = $v->label;
 		}
 
 		$tags = [];
@@ -104,6 +108,12 @@ class RelationshipsController extends BaseController {
 
 			if (is_array($selectedStates)) {
 				$builder->whereIn('latest_revision_state', $selectedStates);
+			}
+
+			if (is_array($sourceVocabularies)) {
+				$builder->whereHas('sourceConcept', function ($q) use ($sourceVocabularies) {
+					$q->whereIn('vocabulary_id', $sourceVocabularies);
+				});
 			}
 
 			if (is_array($targetVocabularies)) {
@@ -217,7 +227,7 @@ class RelationshipsController extends BaseController {
 		}
 
 		$args = [
-			'sourceVocabulary' => $sourceVocabulary,
+			'sourceVocabularies' => $sourceVocabularies,
 			'vocabularyList' => $vocabularyList,
 			'targetVocabularies' => $targetVocabularies,
 			'states' => Lang::get('relationships.states'),
@@ -380,16 +390,14 @@ class RelationshipsController extends BaseController {
 	 */
 	public function getCreate()
 	{
-		$sourceVocabulary = Vocabulary::find($this->defaultSourceVocabulary);
+		// $sourceVocabulary = null;
 
 		$vocabularyList = [];
 		foreach (Vocabulary::all() as $v) {
-			if ($v->id != $sourceVocabulary->id) {
-				$vocabularyList[$v->id] = $v->label;
-			}
+			$vocabularyList[$v->id] = $v->label;
 		}
 
-		$targetVocabulary = null;
+		// $targetVocabulary = null;
 		$targetConcept = null;
 
 		return View::make('relationships.create', array(
