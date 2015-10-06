@@ -113,11 +113,12 @@ og målbegrep har
 
 <script>
 
-    $(document).ready(function() {
+    document.addEventListener("DOMContentLoaded", function(event) {
       $('.selectpicker').selectpicker();
       $('select[name="perPage"]').on('change', function (e) {
             var qs = '<?php unset($query["perPage"]); echo http_build_query($query); ?>';
-            var url = (qs.length > 0) ? './?' + qs + '&' : './?';
+            var b = './relationships?';
+            var url = (qs.length > 0) ? b + qs + '&' : b;
             url = url + 'perPage=' + $(this).val();
             window.location = url;
       });

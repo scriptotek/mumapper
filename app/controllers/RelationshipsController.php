@@ -221,8 +221,8 @@ class RelationshipsController extends BaseController {
 		$perPageOptions = array('100' => '100', '200' => '200', '1000' => '1000', '5000' => '5000');
 		$perPage = intval(Input::get('perPage', '200'));
 
-		// Debugbar will seriously slow down page rendering for very large pages
-		if ($perPage > 500) {
+		// Debugbar will slow down page rendering for very large pages
+		if ($perPage > 100) {
 			Debugbar::disable();
 		}
 
@@ -249,6 +249,24 @@ class RelationshipsController extends BaseController {
 		return array($args, $builder, $sort);
 	}
 
+	public function getRelationships($paginate=false)
+	{
+		list($args, $builder, $sort) = $this->getQueryBuilder();
+
+		// Cache for 10 minutes?
+		// $builder->remember(10);
+
+		if ($paginate) {
+			// Limit
+			//$builder->take(200);
+			$relationships = $builder->paginate($args['perPage']);
+		} else {
+			$relationships = $builder->get();
+		}
+
+		return array($args, $relationships, $sort);
+	}
+
 	/**
 	 * Display a listing of relationships
 	 *
@@ -257,32 +275,12 @@ class RelationshipsController extends BaseController {
 	public function index()
 	{
 
-		list($args, $builder, $sort) = $this->getQueryBuilder();
-		//$builder->orderBy('created_at')
-
-		// Debug:
-		//
-		// dd([
-		//	'query' => $builder->toSql(),
-		//	'bindings' => $builder->getBindings()
-		// ]);
-
-
-
-		// Cache for 10 minutes?
-		// $builder->remember(10);
-
 		$format = Input::get('format', 'worklist');
+		$paginate = in_array($format, array('worklist', 'inline-turtle', 'inline-rdfxml'));
+		list($args, $relationships, $sort) = $this->getRelationships($paginate);
+
 		$query = Input::all();
 		if (isset($query['page'])) unset($query['page']);
-
-		if (in_array($format, array('worklist', 'inline-turtle', 'inline-rdfxml'))) {
-			// Limit
-			//$builder->take(200);
-			$relationships = $builder->paginate($args['perPage']);
-		} else {
-			$relationships = $builder->get();
-		}
 
 		$args['relationships'] = $relationships;
 		$args['sort_urls'] = array();
@@ -455,7 +453,7 @@ class RelationshipsController extends BaseController {
 	}
 
 	/**
-	 * Store a newly created relationship in storage.
+	 * Store a set of relationships in storage.
 	 *
 	 * @return Response
 	 */
