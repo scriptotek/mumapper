@@ -84,6 +84,7 @@ Route::get('/tags', function() {
 });
 
 Route::get('/apis/snl', 'ApiController@getSnl');
+Route::get('/apis/nowiki', 'ApiController@getNowiki');
 
 Route::get('/lists/{id}', 'TagsController@getShow')
 	->where('id', '[0-9]+');

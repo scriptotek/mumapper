@@ -51,18 +51,10 @@
 				$('#title_lookups{{ $concept->id }}').hide();
 			} else {
 				console.log('WP check: {{ $concept->id }}');
-				$.getJSON('https://no.wikipedia.org/w/api.php?callback=?', {
-					action: 'query',
-					prop: 'extracts',
-					format: 'json',
-					redirects: '1',
-					exsentences: 2,
-					titles: title
+				$.getJSON('/apis/nowiki', {
+					query: title
 				}).done(function(response) {
-					var pages = response.query.pages,
-						pageid = Object.keys(pages)[0],
-						page = response.query.pages[pageid],
-						extract = page.extract;
+					var extract = response.extract;
 					console.log('WP done: {{ $concept->id }}');
 
 					$('#wp{{ $concept->id }}').html('Not found');
