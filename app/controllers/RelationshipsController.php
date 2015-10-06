@@ -140,13 +140,13 @@ class RelationshipsController extends BaseController {
 				$builder->whereHas('sourceConcept', function ($q) use ($labelText) {
 					$q->whereHas('labels', function($q)  use ($labelText) {
 						//$q->where('value', 'LIKE', $labelText);
-						$q->whereRaw('value LIKE _utf8' . DB::connection()->getPdo()->quote($labelText . '%') . ' COLLATE utf8_danish_ci');
+						$q->whereRaw('value LIKE _utf8' . DB::connection()->getPdo()->quote($labelText) . ' COLLATE utf8_danish_ci');
 					});
 
 				})->orWhereHas('targetConcept', function ($q) use ($labelText) {
 					$q->whereHas('labels', function($q)  use ($labelText) {
 						//$q->where('value', 'LIKE', $labelText);
-						$q->whereRaw('value LIKE _utf8' . DB::connection()->getPdo()->quote($labelText . '%') . ' COLLATE utf8_danish_ci');
+						$q->whereRaw('value LIKE _utf8' . DB::connection()->getPdo()->quote($labelText) . ' COLLATE utf8_danish_ci');
 					});
 				});
 			}
