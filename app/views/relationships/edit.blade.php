@@ -6,6 +6,9 @@
   <div class="col-sm-4">
     <h2>
       {{ Lang::get('relationships.title') }} #{{ $relationship->id }}
+      @if ($relationship->comments->count())
+        <a href="#activity"><em class="glyphicon glyphicon-comment"></em></a>
+      @endif
     </h2>
     <div style="font-size: 85%;">
       @foreach ($relationship->tags as $tag)
@@ -159,7 +162,9 @@ The SKOS mapping properties are skos:closeMatch, skos:exactMatch, skos:broadMatc
 </table>
 
 <div class="panel panel-default history">
-  <div class="panel-heading">Aktivitet</div>
+  <div class="panel-heading">
+    <a name="activity">Aktivitet</a>
+  </div>
   <ul class="list-group">
     @foreach ($relationship->history() as $event)
     <li class="list-group-item">
