@@ -55,7 +55,7 @@
 						 property="{{ $label->class }}"
 						 lang="{{ $label->lang }}">
 
-					@if(($label->class == 'altLabel') && ($concept->vocabulary->label == 'DDK23'))
+					@if(($label->class == 'altLabel') && ($concept->vocabulary->label == 'WDNO'))
 						<em>(sensurert)</em>
 					@else
 						{{ $label->value }}
@@ -91,12 +91,14 @@
 			</th>
 			<td>
 				{{ $concept->getRelatedContent() }}
+				<!--
 				<ul>
 					<li>
 						Søk mot Bibsys Ask som utnytter mappingene:<br>
 						<a href="{{ $concept->broadSearchUrl() }}">{{ $concept->broadSearchCQL() }}</a>
 					</li>
 				</ul>
+				-->
 			</td>
 		</tr>
 	</table>

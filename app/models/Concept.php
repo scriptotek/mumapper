@@ -155,7 +155,7 @@ class Concept extends BaseModel implements CommentableInterface {
 			$t .= '<ul>';
 			foreach ($d[$i] as $n) {
 				$t .= '<li>' . 
-					'<a href="' . URL::action('ConceptsController@getShow', ['DDK23', $n[0]]) . '">' .
+					'<a href="' . URL::action('ConceptsController@getShow', [$this->vocabulary->label, $n[0]]) . '">' .
 					implode(' ', $n) .
 					'</a>';
 				$t .= $this->brchildren($d, $n[0]);
@@ -183,7 +183,7 @@ class Concept extends BaseModel implements CommentableInterface {
 			'pref_label' => $label->value,
 		);
 
-		if ($this->vocabulary->label == 'RT') {
+		if ($this->vocabulary->label == 'REAL') {
 			$data['bs_query'] = 'bs.lokoeo-frase+%3D+%22' . $label->value . '%22%20AND%20bs.bibkode=%22k%22';
 			$data['oria_query'] = 'lsr20,exact,' . $label->value;
 			$data['primo_field'] = 'lsr20';
@@ -193,7 +193,7 @@ class Concept extends BaseModel implements CommentableInterface {
 			$data['oria_query'] = 'lsr12,exact,' . $label->value;
 			$data['primo_field'] = 'lsr14';
 
-		} else if ($this->vocabulary->label == 'DDK23') {
+		} else if ($this->vocabulary->label == 'WDNO') {
 			$data['bs_query'] = 'bs.dewey+%3D+%22' . $this->identifier . '%22%20AND%20bs.bibkode=%22k%22';
 			$data['oria_query'] = 'lsr10,exact,' . $this->identifier;
 			$data['primo_field'] = 'lsr10';

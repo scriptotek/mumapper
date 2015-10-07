@@ -1,6 +1,6 @@
 
 	<ul style="max-height:300px;overflow:auto;">
-		@if ($concept->vocabulary->label == 'DDK23')
+		@if ($concept->vocabulary->label == 'WDNO')
 		<li>
 			<a target="wd" href="http://deweyno.pansoft.de/webdewey/index_11.html?recordId=ddc%3a{{ $concept->identifier }}">
 				Norsk WebDewey
@@ -26,7 +26,7 @@
 			</a>
 		</li>
 		@endif
-		@if ($concept->vocabulary->label != 'DDK23')
+		@if ($concept->vocabulary->label != 'WDNO')
 		<li>
 			<a target="lex" href="https://no.wikipedia.org/wiki/{{ $pref_label }}">Wikipedia:</a>
 			<span id="wp{{ $concept->id }}">...</span>
