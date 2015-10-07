@@ -27,16 +27,21 @@ class ApiController extends BaseController {
 			'prop' => 'extracts',
 			'format' => 'json',
 			'redirects' => '1',
-			'exsentences' => 2,
 			'titles' => $q,
+			'exsentences' => 2,
+			'explaintext' => true,
+			'exsectionformat' => 'plain',
 		);
 		$response = json_decode(file_get_contents('https://no.wikipedia.org/w/api.php?' . http_build_query($query)));
 		$page = array_values(get_object_vars($response->query->pages))[0];
 		$extract = null;
 		if (isset($page->extract)) {
-			$extract = strip_tags($page->extract);
+			$extract = $page->extract;
 		}
-		return Response::JSON(array('extract' => $extract));
+		return Response::JSON(array(
+			'extract' => $extract,
+			'orig_response' => json_encode($response),
+		));
 	}
 
 	/**
