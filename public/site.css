@@ -76,11 +76,10 @@ pre {
   padding-left: 0;
 }
 .relationship ul.flat li {
-  display: inline;
-  white-space: nowrap;
+  display: block;
 }
 .relationship ul.flat li:not(:last-child)::after {
- content: ", ";
+
 }
 .relationship ul.flat li:not(:first-child) {
 }
