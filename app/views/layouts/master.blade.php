@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="nb">
 <head>
-  <title>μmapper {{ isset($subtitle) ? ' : ' . $subtitle : '' }}</title>
+  <title>μmapper λ {{ isset($subtitle) ? ' : ' . $subtitle : '' }}</title>
 
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -37,15 +37,15 @@
 
   <header class="row">
 
-    <div class="col-sm-2">
+    <div class="col-sm-5">
       <h1>
         <a href="{{ URL::to('/') }}">
-          μmapper
+          μmapper λ
         </a>
       </h1>
     </div>
 
-    <div class="col-sm-10" style="text-align:right;">
+    <div class="col-sm-7" style="text-align:right;">
 
       @if (Auth::check())
 
