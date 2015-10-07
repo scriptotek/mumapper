@@ -111,7 +111,6 @@ class ConceptsController extends BaseController {
 
 					// Log::debug(' - Failed to save');
 
-					$concept->delete();
 					$out[] = array(
 						'store' => 'failed',
 						'error' => 'validation_failed',
