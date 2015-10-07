@@ -15,7 +15,7 @@
         {{ Lang::get('relationships.source_vocabulary_concept') }}:
       </div>
 
-      {{ $relationship->sourceConcept->extendedRepresentation('source', $relationship->id) }}
+      {{ $relationship->sourceConcept->extendedRepresentation($relationship->id) }}
 
     </td>
     <td colspan="2" style="text-align:center; width:20%; background:#fff; padding-top: 1em;">
@@ -38,7 +38,7 @@
         {{ Lang::get('relationships.target_vocabulary_concept') }}:
       </div>
 
-      {{ $relationship->targetConcept->extendedRepresentation('target', $relationship->id) }}
+      {{ $relationship->targetConcept->extendedRepresentation($relationship->id) }}
 
     </td>
   </tr>

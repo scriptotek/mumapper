@@ -202,14 +202,13 @@ class Concept extends BaseModel implements CommentableInterface {
 		return View::make('concepts.related', $data);
 	}
 
-	public function extendedRepresentation($role, $relId)
+	public function extendedRepresentation($relId)
 	{
-		$relationships = array();
-		if ($role == 'source') {
-			$relationships = $this->sourceRelationships->all();
-		} else if ($role == 'target') {
-			$relationships = $this->targetRelationships->all();
-		}
+		$relationships = array_merge(
+		 	$this->sourceRelationships->all(),
+		 	$this->targetRelationships->all()
+		);
+
 		$relationships = array_filter($relationships, function($rel) use ($relId) {
 			return $rel->id != $relId;
 		});
