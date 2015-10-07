@@ -229,7 +229,7 @@ The SKOS mapping properties are skos:closeMatch, skos:exactMatch, skos:broadMatc
     $('#state option[value="exact"]').attr('data-subtext','skos:exactMatch')
     $('#state option[value="close"]').attr('data-subtext','skos:closeMatch')
     $('#state option[value="broad"]').attr('data-subtext','skos:broadMatch')
-    $('#state option[value="narrow"]').attr('data-subtext','skos:narrowMatch')
+    // $('#state option[value="narrow"]').attr('data-subtext','skos:narrowMatch')
     $('#state option[value="related"]').attr('data-subtext','skos:relatedMatch')
 
     $('.selectpicker').selectpicker();

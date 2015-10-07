@@ -16,7 +16,7 @@ return array(
 		'exact' => 'exact equivalence (=EQ)',
 		'close' => 'inexact equivalence (~EQ)',
 		'broad' => 'broader (BM)',
-		'narrow' => 'narrower (NM)',
+		// 'narrow' => 'narrower (NM)',
 		'related' => 'related (RM)',
 		'rejected' => 'rejected',
 	),
