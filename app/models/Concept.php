@@ -185,7 +185,7 @@ class Concept extends BaseModel implements CommentableInterface {
 
 		if ($this->vocabulary->label == 'REAL') {
 			$data['bs_query'] = 'bs.lokoeo-frase+%3D+%22' . $label->value . '%22%20AND%20bs.bibkode=%22k%22';
-			$data['oria_query'] = 'lsr20,exact,' . $label->value;
+			$data['oria_query'] = 'lsr20,exact,' . $label->value . ' OR lsr17,exact,' . $label->value;
 			$data['primo_field'] = 'lsr20';
 
 		} else if ($this->vocabulary->label == 'HUME') {
