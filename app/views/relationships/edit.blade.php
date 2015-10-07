@@ -143,7 +143,7 @@ The SKOS mapping properties are skos:closeMatch, skos:exactMatch, skos:broadMatc
         <input type="hidden" name="query" value="{{ $query }}">
         <input type="hidden" name="next" value="{{ $nextId }}">
 
-        <button type="submit" id="save-btn" class="btn btn-primary">Lagre/godkjenn</button>
+        <button type="submit" id="save-btn" class="btn btn-primary" disabled="disabled">Lagre/godkjenn</button>
 
       </form>
 
@@ -185,7 +185,7 @@ The SKOS mapping properties are skos:closeMatch, skos:exactMatch, skos:broadMatc
 
 <script>
 
-  $(function () {
+  document.addEventListener("DOMContentLoaded", function(event) {
 
     function updateFormState() {
 
