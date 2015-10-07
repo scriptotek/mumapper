@@ -66,10 +66,12 @@
           <span class="glyphicon glyphicon-resize-horizontal"></span>
           Relasjoner
         </a>
+        <!--
         <a href="{{ URL::to('/tags') }}" style="margin:1px 6px;">
           <span class="glyphicon glyphicon-list"></span>
           Lister
         </a>
+        -->
         <a href="{{ URL::to('/activity') }}" style="margin:1px 6px;">
           <span class="glyphicon glyphicon-dashboard"></span>
           Aktivitet

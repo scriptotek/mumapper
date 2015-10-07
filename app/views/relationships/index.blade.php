@@ -54,6 +54,7 @@
             </div>
         </div>
 
+        <!--
         <div class="form-group">
             <label class="col-sm-2 control-label" for="state">liste(r):</label>
             <div class="col-sm-2">
@@ -68,6 +69,7 @@
                     )) }}
             </div>
         </div>
+        -->
 
 der kildebegrep har
         <div class="form-group">
