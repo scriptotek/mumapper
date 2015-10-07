@@ -72,6 +72,9 @@ pre {
   padding-left: .5em;
   list-style-type: none;
 }
+.relationship ul.flat {
+  padding-left: 0;
+}
 .relationship ul.flat li {
   display: inline;
   white-space: nowrap;
