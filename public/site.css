@@ -75,8 +75,9 @@ pre {
 .relationship ul.flat {
   padding-left: 0;
 }
-.relationship ul.flat li {
-  display: block;
+.relationship li.icon {
+  text-indent:-10px;
+  margin-left:20px
 }
 .relationship ul.flat li:not(:last-child)::after {
 

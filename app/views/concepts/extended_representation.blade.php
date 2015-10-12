@@ -13,7 +13,9 @@
       <ul class="flat">
       @foreach ($concept->labels as $label)
         @if ($label->lang == 'nb' && $label->class == 'altLabel')
-          <li>{{ $label->value }}</li>
+          <li class="icon">{{ $label->value }}</li>
+        @elseif ($label->lang != 'nb' && $label->class == 'prefLabel')
+          <li class="icon">{{ $label->value }} <em>({{ $label->lang }})</em></li>
         @endif
       @endforeach
       </ul>
