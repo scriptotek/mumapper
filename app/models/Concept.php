@@ -168,7 +168,12 @@ class Concept extends BaseModel implements CommentableInterface {
 
 	public function getNotes()
 	{
-		return isset($this->data['notes']) ? $this->data['notes'] : array();
+		return array_filter(
+			isset($this->data['notes']) ? $this->data['notes'] : array(),
+			function($note) {
+				return strpos($note, 'Lukket bemerkning') !== 0;
+			}
+		);
 	}
 
 	public function getRelatedContent()
