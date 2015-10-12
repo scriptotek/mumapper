@@ -52,6 +52,7 @@
 		</td>
 		<td style="white-space:nowrap;">
 			<a href="{{URL::action('RelationshipsController@show', $rel->id) . '?' . http_build_query($query) }}">
+				{{ $rel->reviewStateIcon() }}
 				{{ $rel->stateLabel() }}
 				@if (count($rel->comments))
 					<span class="glyphicon glyphicon-comment" title="Relasjonen har kommentarer"></span>

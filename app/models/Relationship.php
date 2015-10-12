@@ -61,6 +61,11 @@ class Relationship extends BaseModel implements CommentableInterface {
 		return $this->hasOne('RelationshipRevision', 'id', 'latest_revision_id');
 	}
 
+	public function isReviewed()
+	{
+		return !is_null($this->latestRevision->reviewed_at);
+	}
+
 	public function sourceConcept()
 	{
 		return $this->hasOne('Concept', 'id', 'source_concept_id');
@@ -151,11 +156,17 @@ class Relationship extends BaseModel implements CommentableInterface {
 		);
 		if ($concept->id == $this->sourceConcept->id) {
 			$args['target'] = $this->targetConcept->representation();
-			return Lang::get('relationships.as_source', $args);
+			$label = Lang::get('relationships.as_source', $args);
 		} else {
 			$args['source'] = $this->sourceConcept->representation();
-			return Lang::get('relationships.as_target', $args);
+			$label = Lang::get('relationships.as_target', $args);
 		}
+		return $this->reviewStateIcon() . ' ' . $label;
+	}
+
+	public function reviewStateIcon()
+	{
+		return '<em class="glyphicon glyphicon-link" style="color: ' . ($this->isReviewed() ? '#1BD647' : '#ccc') . '"></em>';
 	}
 
 	/*

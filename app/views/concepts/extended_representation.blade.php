@@ -50,7 +50,6 @@
       @else
         @foreach ($otherRelationships as $rel)
           <li class="icon">
-            <em class="glyphicon glyphicon-link" style="color:gray"></em>
             {{ $rel->representationFrom($concept) }}
           </li>
         @endforeach
