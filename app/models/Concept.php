@@ -200,12 +200,17 @@ class Concept extends BaseModel implements CommentableInterface {
 
 		if ($this->vocabulary->label == 'REAL') {
 			$data['bs_query'] = 'bs.lokoeo-frase+%3D+%22' . $label->value . '%22%20AND%20bs.bibkode=%22k%22';
-			$data['oria_query'] = 'lsr20,exact,' . $label->value . ' OR lsr17,exact,' . $label->value;
-			$data['primo_field'] = 'lsr20';
+			if ($this->getType() == 'Geographic') {
+				$data['oria_query'] = 'lsr17,exact,' . $label->value;
+				$data['primo_field'] = 'lsr17';
+			} else {
+				$data['oria_query'] = 'lsr20,exact,' . $label->value;
+				$data['primo_field'] = 'lsr20';
+			}
 
 		} else if ($this->vocabulary->label == 'HUME') {
 			$data['bs_query'] = 'bs.humord+%3D+%22' . $label->value . '%22';
-			$data['oria_query'] = 'lsr12,exact,' . $label->value;
+			$data['oria_query'] = 'lsr14,exact,' . $label->value;
 			$data['primo_field'] = 'lsr14';
 
 		} else if ($this->vocabulary->label == 'WDNO') {

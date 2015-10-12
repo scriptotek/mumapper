@@ -17,7 +17,7 @@
 			<a target="lex" href="http://ask.bibsys.no/ask/action/result?cmd=&amp;kilde=biblio&amp;cql={{$bs_query}}&amp;sortering=sortdate-&amp;treffPrSide=50">
 				Bibsys Ask</a>
 			/
-			<a target="lex" href="http://bibsys-primo.hosted.exlibrisgroup.com/primo_library/libweb/action/dlSearch.do?institution=UBO&amp;vid=UBO&amp;tab=library_catalogue&amp;prefLang=no_NO&amp;bulkSize=50&amp;query={{$oria_query}}">
+			<a target="lex" href="http://bibsys-primo.hosted.exlibrisgroup.com/primo_library/libweb/action/dlSearch.do?institution=UBO&amp;vid=UBO&amp;tab=library_catalogue&amp;prefLang=no_NO&amp;bulkSize=50&amp;query={{urlencode($oria_query)}}">
 				Oria</a>
 		</li>
 		<li>
@@ -37,7 +37,7 @@
 		</li>
 		@endif
 		<li>
-			<a target="lex" href="http://bibsys-primo.hosted.exlibrisgroup.com/primo_library/libweb/action/dlSearch.do?institution=UBO&amp;vid=UBO&amp;tab=library_catalogue&amp;prefLang=no_NO&amp;bulkSize=50&amp;query={{$oria_query}}">Oria:</a>
+			<a target="lex" href="http://bibsys-primo.hosted.exlibrisgroup.com/primo_library/libweb/action/dlSearch.do?institution=UBO&amp;vid=UBO&amp;tab=library_catalogue&amp;prefLang=no_NO&amp;bulkSize=50&amp;query={{urlencode($oria_query)}}">Oria:</a>
 			<span id="oria{{ $concept->id }}">...</span>
 		</li>
 	</ul>
