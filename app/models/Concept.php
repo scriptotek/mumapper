@@ -181,6 +181,11 @@ class Concept extends BaseModel implements CommentableInterface {
 		return isset($this->data['related']) ? $this->data['related'] : array();
 	}
 
+	public function getType()
+	{
+		return (isset($this->data['type'])) ? $this->data['type'] : 'Topic';
+	}
+
 	public function getRelatedContent()
 	{
 		$label = $this->labels()

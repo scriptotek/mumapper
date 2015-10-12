@@ -2,6 +2,13 @@
       <div class="heading">
         {{ $concept->representation() }}
       </div>
+      @if ($concept->getType() == 'Geographic')
+        <div>Type: sted / geografisk navn</div>
+      @elseif ($concept->getType() == 'Temporal')
+        <div>Type: tidspunkt / tidsperiode</div>
+      @elseif ($concept->getType() == 'GenreForm')
+        <div>Type: sjanger / form</div>
+      @endif
 
       <ul class="flat">
       @foreach ($concept->labels as $label)
