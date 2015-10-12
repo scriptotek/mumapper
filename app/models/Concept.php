@@ -176,6 +176,11 @@ class Concept extends BaseModel implements CommentableInterface {
 		);
 	}
 
+	public function getRelated()
+	{
+		return isset($this->data['related']) ? $this->data['related'] : array();
+	}
+
 	public function getRelatedContent()
 	{
 		$label = $this->labels()
@@ -226,6 +231,7 @@ class Concept extends BaseModel implements CommentableInterface {
 			'concept' => $this,
 			'tree' => $tree,
 			'notes' => $this->getNotes(),
+			'related' => $this->getRelated(),
 			'otherRelationships' => $relationships,
 		));
 	}

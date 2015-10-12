@@ -11,12 +11,18 @@
       @endforeach
       </ul>
 
-      @if (count($notes))
-        <h4>Notes</h4>
+      @if (count($related) || count($notes))
+        <h4>Notes and references</h4>
         <ul>
-        @foreach ($notes as $note)
-          <li style="margin: 0 0 8px 0;">
+        @foreach ($related as $rel)
+          <li class="icon">
             <em class="glyphicon glyphicon-hand-right"></em>
+            Se også <a href="/concepts/{{ $concept->vocabulary->label }}/{{ $rel[0] }}">{{ $rel[1] }}</a>
+          </li>
+        @endforeach
+        @foreach ($notes as $note)
+          <li class="icon">
+            <em class="glyphicon glyphicon-chevron-right"></em>
             {{ $note}}
           </li>
         @endforeach
@@ -34,7 +40,7 @@
         <li><em>None yet</em></li>
       @else
         @foreach ($otherRelationships as $rel)
-          <li>
+          <li class="icon">
             <em class="glyphicon glyphicon-link" style="color:gray"></em>
             {{ $rel->representationFrom($concept) }}
           </li>
@@ -42,6 +48,6 @@
       @endif
       </ul>
 
-      <h4>Reference</h4>
+      <h4>External sources</h4>
       {{ $concept->getRelatedContent() }}
     </div>
