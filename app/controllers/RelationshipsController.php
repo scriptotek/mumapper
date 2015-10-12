@@ -162,7 +162,6 @@ class RelationshipsController extends BaseController {
 					$q->whereNull('reviewed_at');
 				});
 				$builder->where('latest_revision_state', '!=', 'suggested');
-				$builder->where('latest_revision_state', '!=', 'rejected'); // ???
 
 			} else if ($selectedReviewState == 'reviewed') {
 				$builder->whereHas('latestRevision', function ($q) {
