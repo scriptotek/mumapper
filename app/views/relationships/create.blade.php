@@ -26,7 +26,9 @@
             Kildebegrep
         </label>
         <div id="sourceConcept">
-          {{ Form::text('sourceConcept', null, array(
+          {{ Form::text('sourceConcept',
+            isset($sourceConcept) ? $sourceConcept->simpleTextRepresentation() : '',
+            array(
             'id' => 'sourceConceptText',
             'class' => 'typeahead form-control',
           )) }}
@@ -57,7 +59,9 @@
             Målbegrep
         </label>
         <div id="targetConcept">
-            {{ Form::text('targetConcept', null, array(
+            {{ Form::text('targetConcept', 
+                isset($targetConcept) ? $targetConcept->simpleTextRepresentation() : '',
+                array(
                 'id' => 'targetConceptText',
                 'class' => 'typeahead form-control',
             )) }}
@@ -80,19 +84,39 @@
 
 <script>
   
-  $(function () {
+  document.addEventListener("DOMContentLoaded", function(event) {
 
     var config = [
       { name: 'sourceConcept', 
-        url: '/concepts/search?vocabulary=1&q=%QUERY', 
+        url: '/concepts/search?excludevocabulary=3&q=%QUERY', 
         idfield: 'source_concept',
-        descfield: 'sourceConceptDesc'
+        descfield: 'sourceConceptDesc',
+        @if (isset($sourceConcept))
+          selected: {
+            id: '{{ $sourceConcept->id}}',
+            identifier: '{{ $sourceConcept->identifier}}',
+            label: '{{ $sourceConcept->prefLabel() }}',
+            vocabulary: '{{ $sourceConcept->vocabulary->label }}',
+          }
+        @else
+          selected: null
+        @endif
       }
       ,
       { name: 'targetConcept', 
         url: '/concepts/search?excludevocabulary=1&q=%QUERY',
         idfield: 'target_concept', 
-        descfield: 'targetConceptDesc' 
+        descfield: 'targetConceptDesc',
+        @if (isset($targetConcept))
+          selected: {
+            id: '{{ $targetConcept->id}}',
+            identifier: '{{ $targetConcept->identifier}}',
+            label: '{{ $targetConcept->prefLabel() }}',
+            vocabulary: '{{ $targetConcept->vocabulary->label }}',
+          }
+        @else
+          selected: null
+        @endif 
       }
     ];
 
@@ -117,7 +141,7 @@
         if (concept != null) {
           console.log('selectConcept: ' + concept.identifier + ' - ' + concept.label);
           $('input[name="' + field.idfield + '"]').val(concept.id);
-          $('#' + field.descfield).text(concept.vocabulary + ': ' + concept.identifier + ' – ' + concept.label);
+          $('#' + field.descfield).text(concept.vocabulary + ': ' + concept.id + ' – ' + concept.label);
           $('#' + field.name).parent().removeClass('has-error').addClass('has-success'); 
           validFields[c.name] = true;
         } else {
@@ -136,23 +160,21 @@
         limit: 10,
         remote: {
           url: c.url,
-          ajax: { 
-            type: 'GET',
-            dataType: 'JSON'
-          }
+          wildcard: '%QUERY'
         }
       });
       hound.initialize();
 
-      var txtField = $('#' + c.name +' .typeahead')
+      var $txtField = $('#' + c.name +' .typeahead')
 
-      txtField
+      $txtField
           .typeahead({
             minLength: 2
           }, {
             name: c.name,
-            displayKey: 'value',
-            source: hound.ttAdapter(),
+            display: 'label',
+            source: hound,
+            limit: 20,
             templates: {
               empty: [
                 '<div class="tt-empty">',
@@ -161,10 +183,10 @@
               ].join('\n'),
               suggestion: function(o) {
                 //console.log(o);
-                return '<p><strong>' + o.label + '</strong> (' + o.vocabulary + ' : ' + o.identifier + ')</p>';
+                return '<p><strong>' + o.label + '</strong> (' + o.vocabulary + ')</p>';
               }
             }
-          })
+         })
          .on('typeahead:selected', function(e, s, d) {
             console.log('typeahead:selected');
             if (s) {
@@ -189,14 +211,17 @@
             selectConcept(c, datum);
          })
          .on('keyup', function (e) {
-            var v = txtField.val();
+            var v = $txtField.val();
+
             //console.log(selectedConcept);
+
             if (selectedConcept && v != selectedConcept.label && v != selectedConcept.identifier) {
+              console.log('Deselect');
               selectConcept(c, null);
             }
-            window.hound = hound;
+            // window.hound = hound;
 
-            var matches = hound.index.get(v);
+            // var matches = hound.index.get(v);
 
             // console.log(v);
             // console.log(matches);
@@ -206,12 +231,21 @@
             
             return true;
          });
+        
+      if (c.selected) {
+        selectConcept(c, c.selected);
+      }
 
 
     });
 
     $('.selectpicker').selectpicker();
-    $('#sourceConceptText').focus();
+
+    if ($('#sourceConceptText').val() == '') {
+      $('#sourceConceptText').focus();
+    } else {
+      $('#targetConceptText').focus();
+    }
 
   });
 

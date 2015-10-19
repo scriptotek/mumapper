@@ -54,6 +54,7 @@
           </li>
         @endforeach
       @endif
+        <li><a href="/relationships/create?{{ $role }}={{ $concept->vocabulary->id }}:{{ $concept->identifier }}">+ New mapping</a></li>
       </ul>
 
       <h4>External sources</h4>

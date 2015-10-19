@@ -257,11 +257,10 @@ class ConceptsController extends BaseController {
 
 		$results = array_map(function($concept) {
 			return array(
-				'value' => $concept->value, // for autocomplete
 				'id' => $concept->id,
 				'vocabulary' => $concept->label,
 				'identifier' => $concept->identifier,
-				'label' => $concept->value,
+				'label' => ($concept->notation ? $concept->notation . ' ' : '') . $concept->value,
 			);
 		}, $q->limit(50)->get());
 
@@ -286,11 +285,10 @@ class ConceptsController extends BaseController {
 
 			$results = array_map(function($concept) {
 				return array(
-					'value' => $concept->notation, // for autocomplete
 					'id' => $concept->id,
 					'vocabulary' => $concept->label,
 					'identifier' => $concept->identifier,
-					'label' => $concept->value,
+					'label' => ($concept->notation ? $concept->notation . ' ' : '') . $concept->value,
 				);
 			}, $q->limit(50)->get());
 
@@ -316,11 +314,10 @@ class ConceptsController extends BaseController {
 			
 			$results = array_map(function($concept) {
 				return array(
-					'value' => $concept->identifier, // for autocomplete
 					'id' => $concept->id,
 					'vocabulary' => $concept->label,
 					'identifier' => $concept->identifier,
-					'label' => $concept->value,
+					'label' => ($concept->notation ? $concept->notation . ' ' : '') . $concept->value,
 				);
 			}, $q->limit(50)->get());
 		}

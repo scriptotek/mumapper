@@ -110,7 +110,7 @@ pre {
 	float:left;
      width: 100%;
 }
-.tt-dropdown-menu {
+.tt-menu {
      width: 100%;
 }
 .tt-hint {
@@ -118,7 +118,7 @@ pre {
      color: #bbb;
 }
 
-.tt-dropdown-menu {
+.tt-menu {
   position: absolute;
   top: 100%;
   left: 0;
@@ -138,7 +138,7 @@ pre {
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
   background-clip: padding-box;
 }
-.tt-suggestion > p, .tt-empty > p {
+.tt-suggestion, .tt-empty {
   display: block;
   padding: 3px 20px;
   clear: both;
@@ -147,12 +147,12 @@ pre {
   color: #333333;
   white-space: nowrap;
 }
-tt-empty > p {
+tt-empty {
   font-style: italic;
 }
-.tt-suggestion > p:hover,
-.tt-suggestion > p:focus,
-.tt-suggestion.tt-cursor p {
+.tt-suggestion:hover,
+.tt-suggestion:focus,
+.tt-suggestion.tt-cursor {
   color: #ffffff;
   text-decoration: none;
   outline: 0;

@@ -387,21 +387,31 @@ class RelationshipsController extends BaseController {
 	 */
 	public function getCreate()
 	{
-		// $sourceVocabulary = null;
+		$sourceConcept = null;
+		$targetConcept = null;
+
+		if (Input::has('source')) {
+			list($vocab, $id) = explode(':', Input::get('source'));
+			$sourceConcept = Concept::where('identifier', $id)
+				->where('vocabulary_id', $vocab)->first();
+		}
+		if (Input::has('target')) {
+			list($vocab, $id) = explode(':', Input::get('target'));
+			$targetConcept = Concept::where('identifier', $id)
+				->where('vocabulary_id', $vocab)->first();
+		}
 
 		$vocabularyList = [];
 		foreach (Vocabulary::all() as $v) {
 			$vocabularyList[$v->id] = $v->label;
 		}
 
-		// $targetVocabulary = null;
-		$targetConcept = null;
-
 		return View::make('relationships.create', array(
 			// 'targetVocabulary' => $targetVocabulary,
 			'vocabularyList' => $vocabularyList,
 			'states' => Lang::get('relationships.states'),
-			// 'targetConcept' => $targetConcept,
+			'sourceConcept' => $sourceConcept,
+			'targetConcept' => $targetConcept,
 		));
 	}
 

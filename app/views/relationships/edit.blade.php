@@ -113,7 +113,7 @@ The SKOS mapping properties are skos:closeMatch, skos:exactMatch, skos:broadMatc
         {{ Lang::get('relationships.source_vocabulary_concept') }}:
       </div>
 
-      {{ $relationship->sourceConcept->extendedRepresentation($relationship->id) }}
+      {{ $relationship->sourceConcept->extendedRepresentation($relationship->id, 'source') }}
 
     </td>
     <td colspan="2" style="text-align:center; width:20%; background:#fff;">
@@ -154,7 +154,7 @@ The SKOS mapping properties are skos:closeMatch, skos:exactMatch, skos:broadMatc
         {{ Lang::get('relationships.target_vocabulary_concept') }}:
       </div>
 
-      {{ $relationship->targetConcept->extendedRepresentation($relationship->id) }}
+      {{ $relationship->targetConcept->extendedRepresentation($relationship->id, 'target') }}
 
     </td>
   </tr>

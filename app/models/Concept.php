@@ -149,6 +149,11 @@ class Concept extends BaseModel implements CommentableInterface {
 		return $lab;
 	}
 
+	public function simpleTextRepresentation()
+	{
+		return ($this->notation ? $this->notation . ' ' : '' ) . $this->prefLabel();
+	}
+
 	private function brchildren($d, $i) {
 		$t = '';
 		if (isset($d[$i])) {
@@ -222,7 +227,7 @@ class Concept extends BaseModel implements CommentableInterface {
 		return View::make('concepts.related', $data);
 	}
 
-	public function extendedRepresentation($relId)
+	public function extendedRepresentation($relId, $role=null)
 	{
 		$relationships = array_merge(
 		 	$this->sourceRelationships->all(),
@@ -240,6 +245,7 @@ class Concept extends BaseModel implements CommentableInterface {
 		return View::make('concepts.extended_representation', array(
 			'concept' => $this,
 			'tree' => $tree,
+			'role' => $role,
 			'notes' => $this->getNotes(),
 			'related' => $this->getRelated(),
 			'otherRelationships' => $relationships,
