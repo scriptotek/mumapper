@@ -14,11 +14,15 @@
 		@else
 
 		<li>
+			@if (isset($bs_query))
 			<a target="lex" href="http://ask.bibsys.no/ask/action/result?cmd=&amp;kilde=biblio&amp;cql={{$bs_query}}&amp;sortering=sortdate-&amp;treffPrSide=50">
 				Bibsys Ask</a>
-			/
+			@endif
+
+			@if (isset($oria_query))
 			<a target="lex" href="http://bibsys-primo.hosted.exlibrisgroup.com/primo_library/libweb/action/dlSearch.do?institution=UBO&amp;vid=UBO&amp;tab=library_catalogue&amp;prefLang=no_NO&amp;bulkSize=50&amp;query={{urlencode($oria_query)}}">
 				Oria</a>
+			@endif
 		</li>
 		<li>
 			<a target="lex" href="http://www.nob-ordbok.uio.no/perl/ordbok.cgi?&amp;ant_bokmaal=5&amp;ant_nynorsk=5&amp;begge=+&amp;ordbok=begge&amp;OPP={{$pref_label}}">
@@ -36,15 +40,18 @@
 			<span id="snl{{ $concept->id }}">...</span>
 		</li>
 		@endif
+		@if (isset($oria_query))
 		<li>
 			<a target="lex" href="http://bibsys-primo.hosted.exlibrisgroup.com/primo_library/libweb/action/dlSearch.do?institution=UBO&amp;vid=UBO&amp;tab=library_catalogue&amp;prefLang=no_NO&amp;bulkSize=50&amp;query={{urlencode($oria_query)}}">Oria:</a>
 			<span id="oria{{ $concept->id }}">...</span>
 		</li>
+		@endif
 	</ul>
 
 	<script>
 		document.addEventListener("DOMContentLoaded", function() {
 
+			@if (isset($primo_field))
 			var title = '{{ $pref_label }}';
 			var primo_field = '{{ $primo_field }}';
 			if (title == '') {
@@ -94,6 +101,7 @@
 					$('#oria{{ $concept->id }}').html('Failed!');
 				});
 			}
+			@endif
 
 		});
 	</script>
