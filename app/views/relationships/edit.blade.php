@@ -69,7 +69,7 @@
         </span>
       @endif
 
-      @if ($args['selectedReviewState'])
+      @if ($args['selectedReviewState'] && $args['selectedReviewState'] != 'all')
         <span class="criterium">
           godkjenningsstatus = {{ $args['selectedReviewState'] }}
         </span>
