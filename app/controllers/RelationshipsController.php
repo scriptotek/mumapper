@@ -80,6 +80,8 @@ class RelationshipsController extends BaseController {
 
 		$notation = Input::get('notation');
 
+		$lastModifiedBy = Input::get('lastModifiedBy');
+
 		// With this eager loading, we get 6 queries instead of
 		// 3^N queries for N relationships.
 		$builder = Relationship::with([
@@ -157,6 +159,12 @@ class RelationshipsController extends BaseController {
 				});
 			}
 
+			if ($lastModifiedBy) {
+				$builder->whereHas('latestRevision', function ($q) use ($lastModifiedBy) {
+					$q->where('created_by', '=', $lastModifiedBy);
+				});
+			}
+
 			if ($selectedReviewState == 'pending') {
 				$builder->whereHas('latestRevision', function ($q) {
 					$q->whereNull('reviewed_at');
@@ -225,11 +233,19 @@ class RelationshipsController extends BaseController {
 			Debugbar::disable();
 		}
 
+		$users = ['0' => 'alle'];
+		foreach (User::get() as $u)
+		{
+			$users[$u->id] = $u->name;
+		}
+
 		$args = [
 			'sourceVocabularies' => $sourceVocabularies,
 			'vocabularyList' => $vocabularyList,
 			'targetVocabularies' => $targetVocabularies,
 			'states' => Lang::get('relationships.states'),
+			'users' => $users,
+			'lastModifiedBy' => $lastModifiedBy,
 			'selectedStates' => $selectedStates,
 			'reviewStates' => $reviewStates,
 			'selectedReviewState' => $selectedReviewState,

@@ -54,6 +54,14 @@
             </div>
         </div>
 
+        <div class="form-group">
+            <label class="col-sm-2 control-label" for="state">sist endret av:</label>
+            <div class="col-sm-10">
+                {{ Form::select('lastModifiedBy', $users, $lastModifiedBy, 
+                    array('class' => 'selectpicker')) }}
+            </div>
+        </div>
+
         <!--
         <div class="form-group">
             <label class="col-sm-2 control-label" for="state">liste(r):</label>

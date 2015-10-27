@@ -63,6 +63,12 @@
         </span>
       @endif
 
+      @if ($args['lastModifiedBy'])
+        <span class="criterium">
+          sist sendret av = "{{ User::find($args['lastModifiedBy'])->name }}"
+        </span>
+      @endif
+
       @if ($args['selectedReviewState'])
         <span class="criterium">
           godkjenningsstatus = {{ $args['selectedReviewState'] }}
