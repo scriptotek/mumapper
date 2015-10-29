@@ -40,7 +40,7 @@
     </div>
 
 
-    <div class="form-group col-sm-4">
+    <div class="form-group col-sm-3">
         <label class="control-label" for="state">
             Relasjon
         </label>
@@ -54,7 +54,7 @@
     </div>
 
 
-    <div class="form-group col-sm-4 has-error">
+    <div class="form-group col-sm-5 has-error">
         <label class="control-label" for="targetConceptText">
             Målbegrep
         </label>
@@ -174,7 +174,7 @@
             name: c.name,
             display: 'label',
             source: hound,
-            limit: 20,
+            limit: 50,
             templates: {
               empty: [
                 '<div class="tt-empty">',
@@ -183,7 +183,7 @@
               ].join('\n'),
               suggestion: function(o) {
                 //console.log(o);
-                return '<p><strong>' + o.label + '</strong> (' + o.vocabulary + ')</p>';
+                return '<p'+ (o.labelType == 'alt' ? ' style="background-image:url(/icon_puzzle.png); background-position: right 20px center; background-repeat: no-repeat; padding-right:30px;"' : '')  +'><strong>' + o.label + '</strong> (' + o.vocabulary + ')</p>';
               }
             }
          })

@@ -237,15 +237,14 @@ class ConceptsController extends BaseController {
 
 		$results = array();
 
-		// Query 1
+		// Query 1: Search for label
 
 		$q = DB::table('concepts')
-			->join('vocabularies', 'vocabularies.id','=','concepts.vocabulary_id')
 			->join('labels', 'concepts.id', '=', 'labels.concept_id')
 			->whereRaw('labels.value LIKE _utf8' . DB::connection()->getPdo()->quote($query . '%') . ' COLLATE utf8_danish_ci')
 			->where('labels.lang', '=', 'nb')
-			->where('labels.class', '=', 'prefLabel')
-			->select('concepts.id', 'concepts.identifier', 'concepts.notation', 'vocabularies.label', 'labels.value');
+			// ->where('labels.class', '=', 'prefLabel')
+			->select('concepts.id', 'concepts.identifier', 'concepts.notation', 'concepts.vocabulary_id', 'labels.value');
 		if ($vocabulary) {
 			$q->where('vocabulary_id', '=', $vocabulary);
 		}
@@ -255,72 +254,85 @@ class ConceptsController extends BaseController {
 
 		$q->orderBy('labels.value');
 
-		$results = array_map(function($concept) {
-			return array(
-				'id' => $concept->id,
-				'vocabulary' => $concept->label,
-				'identifier' => $concept->identifier,
-				'label' => ($concept->notation ? $concept->notation . ' ' : '') . $concept->value,
-			);
-		}, $q->limit(50)->get());
+		$results = $q->limit(60)->get();
 
 		if (count($results) == 0) {
 
-			// Query 2
+			// Query 2: Search for notation
 
 			$q = DB::table('concepts')
-				->join('vocabularies', 'vocabularies.id','=','concepts.vocabulary_id')
-				->join('labels', function($join)
-					{
-						$join->on('concepts.id', '=', 'labels.concept_id')
-							->where('labels.lang', '=', 'nb')
-							->where('labels.class', '=', 'prefLabel');
-					})
 				->where('notation', 'LIKE', $query . '%')
-				->select('concepts.id', 'concepts.identifier', 'concepts.notation', 'vocabularies.label', 'labels.value');
+				->select('concepts.id', 'concepts.identifier', 'concepts.notation', 'concepts.vocabulary_id');
 			if ($vocabulary) {
 				$q->where('vocabulary_id', $vocabulary);
 			}
 			$q->orderBy('notation');
 
-			$results = array_map(function($concept) {
-				return array(
-					'id' => $concept->id,
-					'vocabulary' => $concept->label,
-					'identifier' => $concept->identifier,
-					'label' => ($concept->notation ? $concept->notation . ' ' : '') . $concept->value,
-				);
-			}, $q->limit(50)->get());
-
+			$results = $q->limit(60)->get();
 		}
 
 		if (count($results) == 0) {
 
-			// Query 3
+			// Query 2: Search for identifier
+
 			$q = DB::table('concepts')
-				->join('vocabularies', 'vocabularies.id','=','concepts.vocabulary_id')
-				->join('labels', function($join) use ($query)
-					{
-						$join->on('concepts.id', '=', 'labels.concept_id')
-							->where('labels.lang', '=', 'nb')
-							->where('labels.class', '=', 'prefLabel');
-					})
 				->where('identifier', '=', $query)
-				->select('concepts.id', 'concepts.identifier', 'concepts.notation', 'vocabularies.label', 'labels.value');
+				->select('concepts.id', 'concepts.identifier', 'concepts.notation', 'concepts.vocabulary_id');
 			if ($vocabulary) {
 				$q->where('vocabulary_id', $vocabulary);
 			}
 			$q->orderBy('identifier');
-			
-			$results = array_map(function($concept) {
-				return array(
-					'id' => $concept->id,
-					'vocabulary' => $concept->label,
-					'identifier' => $concept->identifier,
-					'label' => ($concept->notation ? $concept->notation . ' ' : '') . $concept->value,
-				);
-			}, $q->limit(50)->get());
+
+			$results = $q->limit(60)->get();
 		}
+
+		if (count($results) != 0) {
+
+			// Make list of results unique
+			$ids = [];
+			$res2 = [];
+			foreach ($results as $r) {
+				if (in_array($r->id, $ids)) continue;
+				$ids[] = $r->id;
+				$res2[] = $r;
+			}
+			$results = $res2;
+
+			// Prefer preferred labels over alternative, prefer shorter alternative labels over longer ones
+			$prefLabels = [];
+			$altLabels = [];
+			$rawLabels = DB::table('labels')->whereIn('concept_id', $ids)->get();
+			foreach ($rawLabels as $lab) {
+				if ($lab->lang == 'nb' && $lab->class == 'prefLabel') {
+					$prefLabels[$lab->concept_id] = $lab->value;
+				}
+			}
+			foreach ($rawLabels as $lab) {
+				if ($lab->lang == 'nb') {
+					if (!isset($altLabels[$lab->concept_id]) || strlen($lab->value) < strlen($altLabels[$lab->concept_id])) {
+						$altLabels[$lab->concept_id] = $lab->value;
+					}
+				}
+			}
+
+			$vocabs = [];
+			foreach (Vocabulary::all() as $v) {
+				$vocabs[$v->id] = $v->label;
+			}
+
+			foreach ($results as &$res) {
+				if (isset($prefLabels[$res->id])) {
+					$label = $prefLabels[$res->id];
+					$res->labelType = 'pref';
+				} else {
+					$label = $altLabels[$res->id];
+					$res->labelType = 'alt';
+				}
+				$res->label = ($res->notation ? $res->notation . ' ' : '') . $label;
+				$res->vocabulary = $vocabs[$res->vocabulary_id];
+			}
+		}
+
 		return Response::JSON($results);
 	}
 
