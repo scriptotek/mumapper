@@ -103,7 +103,6 @@ class Concept extends BaseModel implements CommentableInterface {
 	public function prefLabel($lang='nb', $fallbackChain=array('en'))
 	{
 		$labels = [];
-		// TODO: make more robust!
 		foreach ($this->labels as $lab) {
 			if ($lab->class == 'prefLabel') {
 				$labels[$lab->lang] = $lab->value;
@@ -119,14 +118,13 @@ class Concept extends BaseModel implements CommentableInterface {
 			if ($lab->class == 'altLabel') {
 				if (is_null($label) || strlen($lab->value) < strlen($label)) {
 					$label = $lab->value;
-
 				}
 			}
 		}
 		if (!is_null($label)) {
 			return $label;
 		}
-		return ' (no label found) ';
+		return '';
 	}
 
 	public function rdfRepresentation($serialization = 'turtle') {
@@ -158,12 +156,13 @@ class Concept extends BaseModel implements CommentableInterface {
 	 */
 	public function representation($prefix = false, $link = true)
 	{
-		$lab = sprintf('%s<span class="identifier">%s: %s %s</span> «%s»',
+		$label = $this->prefLabel();
+		$lab = sprintf('%s<span class="identifier">%s: %s %s</span> %s',
 			($prefix ? 'konseptet ' : ''),
 			$this->vocabulary->label,
 			($this->isBuiltNumber() ? self::$puzzleIcon : ''),
-			$this->notation ?: '', //$this->identifier,
-			$this->prefLabel()
+			$this->notation ?: '',  //$this->identifier,
+			($label ? '«' . $label . '»' : '')
 		);
 		if ($link) {
 			$lab = sprintf('<a href="%s">%s</a>', 
