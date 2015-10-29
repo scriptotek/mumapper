@@ -88,7 +88,7 @@
 
     var config = [
       { name: 'sourceConcept', 
-        url: '/concepts/search?excludevocabulary=3&q=%QUERY', 
+        url: '/concepts/search?excludevocabulary=2&q=%QUERY', 
         idfield: 'source_concept',
         descfield: 'sourceConceptDesc',
         @if (isset($sourceConcept))
