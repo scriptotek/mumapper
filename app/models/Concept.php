@@ -83,6 +83,17 @@ class Concept extends BaseModel implements CommentableInterface {
 		return str_replace('{identifier}', $this->identifier, $this->vocabulary->uri_base);
 	}
 
+	public function isBuiltNumber()
+	{
+		$labels = [];
+		foreach ($this->labels as $lab) {
+			if ($lab->class == 'prefLabel') {
+				return false;
+			}
+		}
+		return true;
+	}
+
 	/**
 	 * Return a prefLabel in the preferred language $lang 
 	 * or one of the fallback languages in $fallbackChain
@@ -100,7 +111,20 @@ class Concept extends BaseModel implements CommentableInterface {
 		foreach ($fallbackChain as $lang) {
 			if (isset($labels[$lang])) return $labels[$lang];
 		}
-		return ' (ERROR: no prefLabel found) ';
+
+		$label = null;
+		foreach ($this->labels as $lab) {
+			if ($lab->class == 'altLabel') {
+				if (is_null($label) || strlen($lab->value) < strlen($label)) {
+					$label = $lab->value;
+
+				}
+			}
+		}
+		if (!is_null($label)) {
+			return $label;
+		}
+		return ' (no label found) ';
 	}
 
 	public function rdfRepresentation($serialization = 'turtle') {
@@ -132,9 +156,10 @@ class Concept extends BaseModel implements CommentableInterface {
 	 */
 	public function representation($prefix = false, $link = true)
 	{
-		$lab = sprintf('%s<span class="identifier">%s: %s</span> «%s»',
+		$lab = sprintf('%s<span class="identifier">%s: %s %s</span> «%s»',
 			($prefix ? 'konseptet ' : ''),
 			$this->vocabulary->label,
+			($this->isBuiltNumber() ? '<span style="background: url(/icon_puzzle.png); padding-left:20px; background-position:left; background-repeat: no-repeat;"> ' : ''),
 			$this->notation ?: '', //$this->identifier,
 			$this->prefLabel()
 		);
@@ -200,28 +225,31 @@ class Concept extends BaseModel implements CommentableInterface {
 
 		$data = array(
 			'concept' => $this,
-			'pref_label' => $label->value,
 		);
 
-		if ($this->vocabulary->label == 'REAL') {
-			$data['bs_query'] = 'bs.lokoeo-frase+%3D+%22' . $label->value . '%22%20AND%20bs.bibkode=%22k%22';
-			if ($this->getType() == 'Geographic') {
-				$data['oria_query'] = 'lsr17,exact,' . $label->value;
-				$data['primo_field'] = 'lsr17';
-			} else {
-				$data['oria_query'] = 'lsr20,exact,' . $label->value;
-				$data['primo_field'] = 'lsr20';
+		if (!is_null($label)) {
+			$data['pref_label'] = $label->value;
+
+			if ($this->vocabulary->label == 'REAL') {
+				$data['bs_query'] = 'bs.lokoeo-frase+%3D+%22' . $label->value . '%22%20AND%20bs.bibkode=%22k%22';
+				if ($this->getType() == 'Geographic') {
+					$data['oria_query'] = 'lsr17,exact,' . $label->value;
+					$data['primo_field'] = 'lsr17';
+				} else {
+					$data['oria_query'] = 'lsr20,exact,' . $label->value;
+					$data['primo_field'] = 'lsr20';
+				}
+
+			} else if ($this->vocabulary->label == 'HUME') {
+				$data['bs_query'] = 'bs.humord+%3D+%22' . $label->value . '%22';
+				$data['oria_query'] = 'lsr14,exact,' . $label->value;
+				$data['primo_field'] = 'lsr14';
+
+			} else if ($this->vocabulary->label == 'WDNO') {
+				$data['bs_query'] = 'bs.dewey+%3D+%22' . $this->identifier . '%22%20AND%20bs.bibkode=%22k%22';
+				$data['oria_query'] = 'lsr10,exact,' . $this->identifier;
+				$data['primo_field'] = 'lsr10';
 			}
-
-		} else if ($this->vocabulary->label == 'HUME') {
-			$data['bs_query'] = 'bs.humord+%3D+%22' . $label->value . '%22';
-			$data['oria_query'] = 'lsr14,exact,' . $label->value;
-			$data['primo_field'] = 'lsr14';
-
-		} else if ($this->vocabulary->label == 'WDNO') {
-			$data['bs_query'] = 'bs.dewey+%3D+%22' . $this->identifier . '%22%20AND%20bs.bibkode=%22k%22';
-			$data['oria_query'] = 'lsr10,exact,' . $this->identifier;
-			$data['primo_field'] = 'lsr10';
 		}
 
 		return View::make('concepts.related', $data);

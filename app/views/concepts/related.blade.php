@@ -11,7 +11,7 @@
 				Engelsk WebDewey
 			</a>
 		</li>
-		@else
+		@elseif (isset($pref_label))
 
 		<li>
 			@if (isset($bs_query))
@@ -30,7 +30,7 @@
 			</a>
 		</li>
 		@endif
-		@if ($concept->vocabulary->label != 'WDNO')
+		@if (isset($pref_label) && $concept->vocabulary->label != 'WDNO')
 		<li>
 			<a target="lex" href="https://no.wikipedia.org/wiki/{{ $pref_label }}">Wikipedia:</a>
 			<span id="wp{{ $concept->id }}">...</span>
