@@ -11,6 +11,8 @@ class Concept extends BaseModel implements CommentableInterface {
 	 */
 	protected $fillable = array('vocabulary_id', 'identifier');
 
+	public static $puzzleIcon = '<span style="background: url(/icon_puzzle.png); padding-left:20px; background-position:left; background-repeat: no-repeat;"> ';
+
 	/**
 	 * Validation rules
 	 * 
@@ -159,7 +161,7 @@ class Concept extends BaseModel implements CommentableInterface {
 		$lab = sprintf('%s<span class="identifier">%s: %s %s</span> «%s»',
 			($prefix ? 'konseptet ' : ''),
 			$this->vocabulary->label,
-			($this->isBuiltNumber() ? '<span style="background: url(/icon_puzzle.png); padding-left:20px; background-position:left; background-repeat: no-repeat;"> ' : ''),
+			($this->isBuiltNumber() ? self::$puzzleIcon : ''),
 			$this->notation ?: '', //$this->identifier,
 			$this->prefLabel()
 		);
@@ -184,9 +186,11 @@ class Concept extends BaseModel implements CommentableInterface {
 		if (isset($d[$i])) {
 			$t .= '<ul>';
 			foreach ($d[$i] as $n) {
+				$c = Concept::where('identifier', '=', $n[0])->where('vocabulary_id', '=', $this->vocabulary->id)->first();
 				$t .= '<li>' . 
 					'<a href="' . URL::action('ConceptsController@getShow', [$this->vocabulary->label, $n[0]]) . '">' .
-					implode(' ', $n) .
+					($c->isBuiltNumber() ? self::$puzzleIcon : '') .
+					$n[0] . ' ' . $c->prefLabel() .
 					'</a>';
 				$t .= $this->brchildren($d, $n[0]);
 				$t .= '</li>';
