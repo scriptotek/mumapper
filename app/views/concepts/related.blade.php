@@ -80,8 +80,8 @@
 					console.log('SNL done: {{ $concept->id }}');
 
 					$('#snl{{ $concept->id }}').html('Not found');
-					if (response.length > 0) {
-						var x = '[' + response[0].title + '] ' + response[0].first_two_sentences;
+					if (response.length > 0 && response[0].title.toLowerCase() == title.toLowerCase()) {
+						var x = response[0].first_two_sentences;
 						$('#snl{{ $concept->id }}').html(x);
 					}
 				}).fail(function() {
