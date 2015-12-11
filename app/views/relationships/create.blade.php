@@ -26,16 +26,18 @@
             Kildebegrep
         </label>
         <div id="sourceConcept">
-          {{ Form::text('sourceConcept',
-            isset($sourceConcept) ? $sourceConcept->simpleTextRepresentation() : '',
-            array(
-            'id' => 'sourceConceptText',
-            'class' => 'typeahead form-control',
-          )) }}
-        </div>
-        <div>
-          <input type="hidden" name="source_concept">
-          <span id="sourceConceptDesc"><em>Ingen</em></span>
+          <div>
+            {{ Form::text('sourceConcept',
+              isset($sourceConcept) ? $sourceConcept->simpleTextRepresentation() : '',
+              array(
+              'id' => 'sourceConceptText',
+              'class' => 'typeahead form-control',
+            )) }}
+          </div>
+          <div>
+            <input type="hidden" name="source_concept">
+            <span id="sourceConceptDesc"><em>Ingen</em></span>
+          </div>
         </div>
     </div>
 
@@ -59,16 +61,40 @@
             Målbegrep
         </label>
         <div id="targetConcept">
-            {{ Form::text('targetConcept', 
+
+            <label class="radio-inline">
+              <input type="radio" name="targetConceptType" value="verified" checked="checked">
+              Kontrollert begrep/klasse
+            </label>
+            <label class="radio-inline">
+              <input type="radio" name="targetConceptType" value="unverified">
+              Ukontrollert begrep/klasse
+            </label>
+
+            <div id="targetConceptVerified">
+              {{ Form::text('targetConcept', 
                 isset($targetConcept) ? $targetConcept->simpleTextRepresentation() : '',
                 array(
                 'id' => 'targetConceptText',
                 'class' => 'typeahead form-control',
-            )) }}
-        </div>
-        <div>
-          <input type="hidden" name="target_concept">
-            <span id="targetConceptDesc"><em>Ingen</em></span>
+              )) }}
+              <div>
+                <input type="hidden" name="target_concept">
+                  <span id="targetConceptDesc"><em>Ingen</em></span>
+              </div>
+
+            </div>
+
+            <div id="targetConceptUnverified" style="display: none;">
+              Vokabular: <input type="hidden" name="vocabulary" value="WDNO"> <strong>WDNO</strong>.
+              Dewey-nummer: {{ Form::text('unverified_target_concept',
+                '',
+                array(
+                'id' => 'targetConceptUnverifiedIdentifier',
+                'class' => 'form-control',
+              )) }}
+            </div>
+
         </div>
     </div>
 
@@ -124,9 +150,14 @@
 
     function checkValidity() {
       var disabled = false;
-      config.forEach(function(c) {
-        if (!validFields[c.name]) disabled = true;
-      });
+
+      if (!validFields['sourceConcept']) disabled = true;
+      if ($('input[name="targetConceptType"]:checked').val() == 'verified') {
+        if (!validFields['targetConcept']) disabled = true;
+      } else {
+        if (!validUnverifiedNotation($('#targetConceptUnverifiedIdentifier').val())) disabled = true;
+      }
+
       $('button[type="submit"]').prop('disabled', disabled);
     }
 
@@ -147,7 +178,7 @@
         } else {
           console.log('selectConcept: null');
           $('input[name="' + field.idfield + '"]').val('');
-          $('#' + field.descfield).text('');          
+          $('#' + field.descfield).text('');
           $('#' + field.name).parent().removeClass('has-success').addClass('has-error'); 
           validFields[c.name] = false;
         }
@@ -246,6 +277,36 @@
     } else {
       $('#targetConceptText').focus();
     }
+
+    $('input[name="targetConceptType"]').on('change', function(evt) {
+      var currentState = $('input[name="targetConceptType"]:checked').val();
+      if (currentState == 'verified') {
+        $('#targetConceptUnverified').hide();
+        $('#targetConceptVerified').show();
+        checkValidity();
+      } else {
+        $('#targetConceptUnverified').show();
+        $('#targetConceptVerified').hide();
+        checkUnverifiedValidity();
+      }
+    });
+
+    function validUnverifiedNotation(x) {
+      return x.match(/^(T[1-9]--)?[0-9]+\.?[0-9]+$/);
+    }
+
+    function checkUnverifiedValidity() {
+      var $x = $('#targetConceptUnverifiedIdentifier');
+      var x = $x.val();
+      if (validUnverifiedNotation(x)) {
+        $x.parent().parent().parent().removeClass('has-error').addClass('has-success');
+      } else {
+        $x.parent().parent().parent().removeClass('has-success').addClass('has-error');
+      }
+      checkValidity();
+    }
+
+    $('#targetConceptUnverifiedIdentifier').on('input', checkUnverifiedValidity);
 
   });
 

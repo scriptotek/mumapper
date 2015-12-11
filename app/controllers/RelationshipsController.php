@@ -443,6 +443,7 @@ class RelationshipsController extends BaseController {
 		}
 		$v = Vocabulary::where('label', $cc['vocabulary'])->first();
 		if (!$v) {
+			dd("Uh oh, vocabulary not found");
 			return array(null, false); // Hvis vokabularet ikke finnes gir vi opp
 		}
 		if (isset($cc['identifier'])) {
@@ -455,6 +456,7 @@ class RelationshipsController extends BaseController {
 				$c = new Concept;
 				$c->vocabulary_id = $v->id;
 				$c->identifier = $cc['identifier'];
+				$c->notation = $cc['identifier'];
 
 				// Mark as draft! Not verified exernally
 				$c->draft = true;
@@ -507,8 +509,16 @@ class RelationshipsController extends BaseController {
 				continue;
 			}
 			$source_concept_id = $concept;
- 
-			list($concept, $created) = $this->lookupConcept(array_get($data, 'target_concept'), true);
+
+			if (array_get($data, 'targetConceptType') == 'unverified') {
+				list($concept, $created) = $this->lookupConcept([
+					'identifier' => array_get($data, 'unverified_target_concept'),
+					'vocabulary' => array_get($data, 'vocabulary'),
+				], true);
+			} else {
+				list($concept, $created) = $this->lookupConcept(array_get($data, 'target_concept'));
+			}
+
 			if (is_null($concept)) {
 				$out[] = array(
 					'store' => 'failed',

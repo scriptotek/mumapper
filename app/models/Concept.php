@@ -11,7 +11,9 @@ class Concept extends BaseModel implements CommentableInterface {
 	 */
 	protected $fillable = array('vocabulary_id', 'identifier');
 
-	public static $puzzleIcon = '<span style="background: url(/icon_puzzle.png); padding-left:20px; background-position:left; background-repeat: no-repeat;"> ';
+	public static $puzzleIcon = '<abbr title="Dette er et bygd nummer" style="margin-left:5px;"><i style="background: url(/icon_puzzle.png); padding-left:20px; background-position:left; background-repeat: no-repeat;"></i></abbr>';
+
+	public static $draftIcon = '<abbr title="Dette begrepet er ikke kontrollert mot originalvokabularet sitt!" style="margin-left:2px;"><i class="glyphicon glyphicon-exclamation-sign"></i></abbr>';
 
 	/**
 	 * Validation rules
@@ -87,6 +89,9 @@ class Concept extends BaseModel implements CommentableInterface {
 
 	public function isBuiltNumber()
 	{
+		if ($this->draft) {
+			return false;
+		}
 		$labels = [];
 		foreach ($this->labels as $lab) {
 			if ($lab->class == 'prefLabel') {
@@ -157,20 +162,18 @@ class Concept extends BaseModel implements CommentableInterface {
 	public function representation($prefix = false, $link = true)
 	{
 		$label = $this->prefLabel();
-		$lab = sprintf('%s<span class="identifier">%s: %s %s</span> %s',
+		$lab = sprintf('%s<span class="identifier">%s: %s</span> %s %s %s',
 			($prefix ? 'konseptet ' : ''),
 			$this->vocabulary->label,
-			($this->isBuiltNumber() ? self::$puzzleIcon : ''),
 			$this->notation ?: '',  //$this->identifier,
+			($this->isBuiltNumber() ? self::$puzzleIcon : ''),
+			($this->draft ? self::$draftIcon : ''),
 			($label ? '«' . $label . '»' : '')
 		);
 		if ($link) {
 			$lab = sprintf('<a href="%s">%s</a>', 
 				URL::action('ConceptsController@getShow', [$this->vocabulary->label, $this->identifier]),
 				$lab);
-		}
-		if ($this->draft) {
-			$lab = '<abbr title="Dette konseptet ble ikke funnet i originalvokabularet sitt."><i class="glyphicon glyphicon-exclamation-sign"></i></abbr> ' . $lab;
 		}
 		return $lab;
 	}
