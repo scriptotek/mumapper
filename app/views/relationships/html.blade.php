@@ -62,7 +62,7 @@
 		<td>
 			{{ $rel->targetConcept->representation() }}
 		</td>
-		<td>
+		<td style="white-space: nowrap;">
 			{{ $rel->updated_at }}
 		</td>
 	</tr>
