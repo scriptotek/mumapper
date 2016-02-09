@@ -63,23 +63,25 @@ $(function () {
 	            }
 	        },
 	        series: [{
-	            name: 'Avvist (Humord)',
-	            data: data.y[2]
-	        }, {
-	            name: 'Godkjent (Humord)',
-	            data: data.y[1]
-	        }, {
 	            name: 'Venter på godkjenning (Humord)',
 	            data: data.y[0]
 	        },{
-	            name: 'Avvist (Realfagstermer)',
-	            data: data.y[5]
-	        }, {
-	            name: 'Godkjent (Realfagstermer)',
-	            data: data.y[4]
-	        }, {
+	            name: 'Godkjent (Humord)',
+	            data: data.y[1]
+	        },{
+	            name: 'Avvist (Humord)',
+	            data: data.y[2],
+	            visible: false
+	        },{
 	            name: 'Venter på godkjenning (Realfagstermer)',
 	            data: data.y[3]
+	        },{
+	            name: 'Godkjent (Realfagstermer)',
+	            data: data.y[4]
+	        },{
+	            name: 'Avvist (Realfagstermer)',
+	            data: data.y[5],
+	            visible: false
 	        }]
 	    });
     });
