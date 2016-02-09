@@ -21,7 +21,7 @@
 
 
 $(function () {
-	$.getJSON('stats.json').done(function(data) {
+	$.getJSON('stats-json').done(function(data) {
 	    $('#container').highcharts({
 	        chart: {
 	            type: 'area'
