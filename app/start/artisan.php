@@ -12,4 +12,5 @@
 */
 
 Artisan::add(new ExportRdfCommand);
+Artisan::add(new UpdateStatsCommand);
 
