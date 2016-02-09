@@ -49,9 +49,15 @@ Route::get('/', function()
 	return Redirect::action('RelationshipsController@index');
 });
 
-
-Route::group(array('before' => 'force.ssl'), function()
+Route::get('/stats', function()
 {
+	return Response::view('stats');
+});
+
+Route::get('/stats.json', 'HomeController@getStats');
+
+//Route::group(array('before' => 'force.ssl'), function()
+//{
 	Route::get('/login', array(
 		'as' => 'login',
 		'uses' => 'UsersController@getLogin',
@@ -59,7 +65,7 @@ Route::group(array('before' => 'force.ssl'), function()
 
 	Route::post('/login', 'UsersController@postLogin');
 	Route::get('/login-using-google', 'UsersController@getLoginUsingGoogle');
-});
+//});
 
 Route::get('/concepts/RT/REAL{id}', function($id) {
 	return Redirect::action('ConceptsController@getShow', array('RT', $id));

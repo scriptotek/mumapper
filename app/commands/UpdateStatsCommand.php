@@ -153,53 +153,29 @@ class UpdateStatsCommand extends Command {
 
 		$this->info(sprintf('REAL: %s ready, %s reviewed, %s rejected  -  HUME: %s ready, %s reviewed, %s rejected', $ready_real_c, $reviewed_real_c, $rejected_real_c, $ready_hume_c, $reviewed_hume_c, $rejected_hume_c));
 
-		$res = DB::select('
-			select * from stats
-		');
 
-//		[
-//			{"x": [0, 1, 2], "y": [3, 1, 6], "name": "Experimental", "marker": {"symbol": "square", "color": "purple"}}, {"x": [1, 2, 3], "y": [3, 4, 5], "name": "Control"}]
+		// $opts = [
+		// 	'filename' => 'µmapper stats',
+		// 	'fileopt' => 'overwrite',
+		// 	'style' => [
+		// 		'type' => 'line',
+		// 	],
+		// 	'world_readable' => 'true',
+		// ];
 
-		$data = [
-			['x' => [], 'y' => [], 'name' => 'Venter på godkjenning'],
-			['x' => [], 'y' => [], 'name' => 'Godkjent'],
-			['x' => [], 'y' => [], 'name' => 'Avvist'],
-		];
-		foreach ($res as $row) {
-			if ($row->category == 'ready' && $row->vocabulary == 'hume') {
-				$data[0]['x'][] = $row->ts;
-				$data[0]['y'][] = $row->value;
-			} else if ($row->category == 'reviewed' && $row->vocabulary == 'hume') {
-				$data[1]['x'][] = $row->ts;
-				$data[1]['y'][] = $row->value;
-			} else if ($row->category == 'rejected' && $row->vocabulary == 'hume') {
-				$data[2]['x'][] = $row->ts;
-				$data[2]['y'][] = $row->value;
-			}
-		}
+		// $client = new GuzzleHttp\Client();
+		// $res = $client->request('POST', 'https://plot.ly/clientresp', [
+		// 	'form_params' => [
+		// 		'un' => 'danmichaelo',
+		// 		'key' => Config::get('app.plotly_key'),
+		// 		'origin' => 'plot',
+		// 		'platform' => 'php',
+		// 	    'args' => json_encode($data),
+		// 	    'kwargs' => json_encode($opts),
+		// 	],
+		// ]);
 
-		$opts = [
-			'filename' => 'µmapper stats',
-			'fileopt' => 'overwrite',
-			'style' => [
-				'type' => 'line',
-			],
-			'world_readable' => 'true',
-		];
-
-		$client = new GuzzleHttp\Client();
-		$res = $client->request('POST', 'https://plot.ly/clientresp', [
-			'form_params' => [
-				'un' => 'danmichaelo',
-				'key' => Config::get('app.plotly_key'),
-				'origin' => 'plot',
-				'platform' => 'php',
-			    'args' => json_encode($data),
-			    'kwargs' => json_encode($opts),
-			],
-		]);
-
-		print $res->getBody() . "\n";
+		// print $res->getBody() . "\n";
 
 		$this->info(sprintf('=========================[ %s ]==================================',
 			strftime('%Y-%m-%d %H:%M:%S')
