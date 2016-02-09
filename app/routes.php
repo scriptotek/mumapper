@@ -54,7 +54,7 @@ Route::get('/stats', function()
 	return Response::view('stats');
 });
 
-Route::get('/stats.json', 'HomeController@getStats');
+Route::get('/stats-json', 'HomeController@getStats');
 
 //Route::group(array('before' => 'force.ssl'), function()
 //{
