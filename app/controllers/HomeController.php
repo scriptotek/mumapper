@@ -59,14 +59,14 @@ class HomeController extends BaseController {
 				$y[3][] = 0;
 				$y[4][] = 0;
 				$y[5][] = 0;
-			}
-			$arg_idx = array_search($ts, $x);
+            }
+            $arg_idx = array_search($ts, $x);
 
-			if ($idx != -1 && $arg_idx !== false) {
-				$data[$idx][$arg_idx] = $row->value;
+            if ($idx != -1 && $arg_idx !== false) {
+				$y[$idx][$arg_idx] = $row->value;
 			}
 
-		}
+        }
 
 		return Response::JSON([
 			'x' => $x,
