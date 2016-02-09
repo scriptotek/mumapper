@@ -127,6 +127,9 @@
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.7.4/js/bootstrap-select.min.js"></script>
 
+  <!-- Highcharts -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highcharts/4.2.3/highcharts.js"></script>
+
   <!-- Typeahead-->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.11.1/typeahead.bundle.min.js"></script>
   @yield('scripts')
