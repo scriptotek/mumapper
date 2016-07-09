@@ -15,7 +15,7 @@ class RelationshipsController extends BaseController {
 	 * @param int $id Relationship id (optional)
 	 * @return array
 	 */
-	protected function getQueryBuilder($id = null)
+	protected function getQueryBuilder($id = null, $options = [])
 	{
 
 		$reviewStates = array(
@@ -23,9 +23,9 @@ class RelationshipsController extends BaseController {
 			'pending' => 'venter på godkjenning',
 			'reviewed' => 'godkjent',
 		);
-		$selectedReviewState = Input::get('reviewstate', 'all');
+		$selectedReviewState = array_get($options, 'reviewstate', Input::get('reviewstate', 'all'));
 
-		$sourceVocabularies = Input::get('sourceVocabularies');
+		$sourceVocabularies = array_get($options, 'sourceVocabularies', Input::get('sourceVocabularies'));
 		if ($sourceVocabularies) {
 			foreach ($sourceVocabularies as $voc) {
 				$voc = Vocabulary::find($voc);
@@ -35,7 +35,7 @@ class RelationshipsController extends BaseController {
 			}
 		}
 
-		$targetVocabularies = Input::get('targetVocabularies');
+		$targetVocabularies = array_get($options, 'targetVocabularies', Input::get('targetVocabularies'));
 		if ($targetVocabularies) {
 			foreach ($targetVocabularies as $voc) {
 				$voc = Vocabulary::find($voc);
@@ -45,7 +45,7 @@ class RelationshipsController extends BaseController {
 			}
 		}
 
-		$selectedStates = Input::get('states');
+		$selectedStates = array_get($options, 'states', Input::get('states'));
 		if ($selectedStates) {
 			foreach ($selectedStates as $state) {
 				if (!isset(Lang::get('relationships.states')[$state])) {
@@ -264,9 +264,9 @@ class RelationshipsController extends BaseController {
 		return array($args, $builder, $sort);
 	}
 
-	public function getRelationships($paginate=false)
+	public function getRelationships($paginate=false, $options=[])
 	{
-		list($args, $builder, $sort) = $this->getQueryBuilder();
+		list($args, $builder, $sort) = $this->getQueryBuilder(null, $options);
 
 		// Cache for 10 minutes?
 		// $builder->remember(10);
@@ -372,6 +372,91 @@ class RelationshipsController extends BaseController {
 
 		# Finally output the graph
 		return $graph->serialise($serializationFormat);
+	}
+
+	// TODO: Move into some smarter place, maybe a service provider..
+	public function jsonResponse($relationships, $fromScheme, $toScheme, $simple=false, $includeRejected=false)
+	{
+		$mappings = [];
+
+		foreach ($relationships as $rel) {
+
+			$predicate = $rel->stateAsSkos();
+
+			if ($includeRejected && $rel->latest_revision_state == 'rejected') {
+				$predicate = 'rejected';
+			}
+
+			// // Exclude suggested and rejected in RDF representation
+			if (!$predicate) {
+				continue;
+			}
+			$source = $rel->sourceConcept->identifier;
+			$target = $rel->targetConcept->identifier;
+
+			// 	$source->add($predicate, $target);
+
+			// 	foreach ($rel->sourceConcept->labels as $lab) {
+			// 		$source->addLiteral('skos:' . $lab->class, $lab->value, $lab->lang);
+			// 	}
+
+			$revs = [];
+			$mapped_at = null;
+			$mapped_by = null;
+			foreach ($rel->revisions as $rev) {
+				$revs[] = [
+					'date' => strval($rev->created_at),
+					'state' => $rev->state,
+					'user' => $rev->created_by,
+					'reviewed' => !is_null($rev->reviewed_at),
+				];
+				if (is_null($mapped_by) && is_null($rev->reviewed_at)) {
+					$mapped_by = $rev->created_by;
+					$mapped_at = strval($rev->created_at);
+				}
+			}
+
+			$comments = [];
+			foreach ($rel->comments as $rev) {
+				$comments[] = [
+					'date' => strval($rev->created_at),
+					'user' => $rev->created_by,
+					'content' => $rev->content,
+				];
+			}
+
+			$mapping = [
+				"id" => $rel->id,
+				"state" => $rel->latest_revision_state,
+				"from" => $source,
+				"to" => $target,
+			];
+
+			if (!$simple) {
+				$mapping['revisions'] = $revs;
+				$mapping['comments'] = $comments;
+				$mapping['mapped_by'] = $mapped_by;
+				$mapping['mapped_at'] = $mapped_at;
+				$mapping['reviewed_by'] = $rel->latestRevision->created_by;
+				$mapping['reviewed_at'] = $rel->latestRevision->reviewed_at;
+			}
+
+			$mappings[] = $mapping;
+
+		}
+
+		$conc = [
+			"type" => "Concordance",
+			"fromScheme" => $fromScheme,
+			"toScheme" => $toScheme,
+			"license" => "http://creativecommons.org/publicdomain/zero/1.0/",
+			"mappings" => $mappings,
+		];
+
+		# Finally output the graph
+//		return $graph->serialise($serializationFormat);
+
+		return json_encode($conc, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
 	}
 
 	/**

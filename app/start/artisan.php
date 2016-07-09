@@ -12,5 +12,6 @@
 */
 
 Artisan::add(new ExportRdfCommand);
+Artisan::add(new ExportJsonCommand);
 Artisan::add(new UpdateStatsCommand);
 

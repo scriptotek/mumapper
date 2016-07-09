@@ -68,7 +68,8 @@ class ExportRdfCommand extends Command {
 			$this->info('Time for a new export');
 
 			$controller = new RelationshipsController;
-			list($args, $relationships, $sort) = $controller->getRelationships(false);
+
+			list($args, $relationships, $sort) = $controller->getRelationships(false, ['reviewstate' => 'reviewed']);
 			$rdfxml = $controller->rdfResponse($relationships, 'rdfxml');
 			file_put_contents(public_path('export.rdf'), $rdfxml);
 			file_put_contents(public_path('export.meta.json'),  json_encode($current));

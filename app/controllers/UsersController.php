@@ -72,21 +72,9 @@ class UsersController extends BaseController {
 
 			$user = User::where('email', $email)->first();
 
-			if (!$user) {
-
-				$user = new User;
-				$user->name = $userInfo['name'];
-				$user->email = $userInfo['email'];
-				$user->save();
-				$userId = $user->id;
-
-				$account = new UserAccount;
-				$account->provider = 'google';
-				$account->user_id = $userId;
-				$account->email = $userInfo['email'];
-				$account->extras = $userInfo;
-				$account->save();
-
+            if (!$user) {
+            	Session::put('userInfo', $userInfo);
+				return View::make('users.activate', array());
 			}
 
 			$userId = $user->id;
@@ -100,6 +88,45 @@ class UsersController extends BaseController {
 			return Redirect::to( (string)$googleService->getAuthorizationUri() );
 
 		}
+	}
+
+	public function postActivateNewAccount()
+	{
+		$userInfo = Session::get('userInfo');
+		Session::forget('userInfo');
+		if (!$userInfo)
+		{
+			echo '??? Prøv på nytt';
+			die;
+		}
+
+		if ($_POST['activationcode'] != Config::get('app.activation_code')) {
+			echo 'huff, ugyldig kode..';
+			die;
+		}
+		$email = $userInfo['email'];
+
+		$user = User::where('email', $email)->first();
+
+        if (!$user) {
+			$user = new User;
+			$user->name = $userInfo['name'];
+			$user->email = $userInfo['email'];
+			$user->save();
+			$userId = $user->id;
+
+			$account = new UserAccount;
+			$account->provider = 'google';
+			$account->user_id = $userId;
+			$account->email = $userInfo['email'];
+			$account->extras = $userInfo;
+			$account->save();
+		}
+
+		$userId = $user->id;
+		Auth::loginUsingId($userId, true);
+
+		return Redirect::to('/')->with('status', 'Velkommen!');
 	}
 
 	public function getLogout()

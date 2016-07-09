@@ -68,7 +68,8 @@ class ConceptsController extends BaseController {
 
 			}
 			$concept->data = array_get($data, 'data');
-			$concept->notation = array_get($data, 'notation');
+            $concept->notation = array_get($data, 'notation');
+            $concept->draft = 0;
 
 			// Log::debug(' - Saving');
 			if (!$concept->save()) {

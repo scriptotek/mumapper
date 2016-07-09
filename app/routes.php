@@ -65,6 +65,7 @@ Route::get('/stats-json', 'HomeController@getStats');
 
 	Route::post('/login', 'UsersController@postLogin');
 	Route::get('/login-using-google', 'UsersController@getLoginUsingGoogle');
+	Route::post('/activate-new-account', 'UsersController@postActivateNewAccount');
 //});
 
 Route::get('/concepts/RT/REAL{id}', function($id) {

@@ -9,7 +9,8 @@
         "willdurand/negotiation": "1.2.*",
         "felixkiss/uniquewith-validator": "1.*",
         "wikibase/easyrdf_lite": "dev-master",
-		"guzzlehttp/guzzle": "^6.1"
+		"guzzlehttp/guzzle": "^6.1",
+		"digitalbazaar/json-ld": "^0.4.7"
 	},
     "require-dev": {
         "way/generators": "2.*",

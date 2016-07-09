@@ -20,4 +20,6 @@
 	</ul>
 </div>
 
+{{ $results->links() }}
+
 @stop

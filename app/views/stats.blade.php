@@ -27,7 +27,8 @@ $(function () {
 	            type: 'area'
 	        },
 	        title: {
-	            text: 'Stats'
+                text: 'Processed mapping candidates',
+                align: 'left'
 	        },
 	        legend: {
 			    layout: 'vertical',
@@ -37,14 +38,15 @@ $(function () {
 			},
 	        xAxis: {
 	            categories: data.x,
-	            tickmarkPlacement: 'on',
+                    tickmarkPlacement: 'on',
+                    tickInterval: 14,
 	            title: {
 	                enabled: false
 	            }
 	        },
 	        yAxis: {
 	            title: {
-	                text: 'Antall'
+	                text: 'Number of mapping candidates processed'
 	            }
 	        },
 	        tooltip: {
@@ -63,25 +65,17 @@ $(function () {
 	            }
 	        },
 	        series: [{
-	            name: 'Venter på godkjenning (Humord)',
+                name: 'Humord: Waiting for review',
 	            data: data.y[0]
 	        },{
-	            name: 'Godkjent (Humord)',
+                name: 'Humord: Completed',
 	            data: data.y[1]
 	        },{
-	            name: 'Avvist (Humord)',
-	            data: data.y[2],
-	            visible: false
-	        },{
-	            name: 'Venter på godkjenning (Realfagstermer)',
+                name: 'Realfagstermer: Waiting for review',
 	            data: data.y[3]
 	        },{
-	            name: 'Godkjent (Realfagstermer)',
+                name: 'Realfagstermer: Completed',
 	            data: data.y[4]
-	        },{
-	            name: 'Avvist (Realfagstermer)',
-	            data: data.y[5],
-	            visible: false
 	        }]
 	    });
     });

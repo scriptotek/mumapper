@@ -3,3 +3,4 @@
 /public/components
 composer.phar
 composer.lock
+/public/export

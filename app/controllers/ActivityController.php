@@ -19,7 +19,7 @@ class ActivityController extends BaseController {
 			$query->where('created_by', $user_id);
 		}
 
-		$results = $query->get();
+		$results = $query->paginate(50);
 
 		// Group by model
 		$grouped = array();
@@ -46,7 +46,10 @@ class ActivityController extends BaseController {
 			);
 		});
 
-		return View::make('activity.index', compact('events'));
+		return View::make('activity.index', array(
+			'events' => $events,
+			'results' => $results,
+		));
 	}
 
 	/**
